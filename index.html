@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>AGP Maintenance Management</title>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+<div id="loginSection">
+
+    <h2>AGP Maintenance Login</h2>
+
+  <body>
+<div id="loginSection">
+
+    <h2>AGP Maintenance Login</h2>
+
+    <label>Email:</label><br>
+    <input type="email" id="loginEmail" placeholder="Enter email">
+    <br><br>
+
+    <label>Password:</label><br>
+    <input type="password" id="loginPassword" placeholder="Enter password">
+    <br><br>
+
+    <button onclick="loginUser()">Login</button>
+
+    <br><br>
+
+    <button onclick="resetPassword()">Forgot Password?</button>
+
+    <p id="loginMessage"></p>
+
+</div>  
+
+<div id="appSection" style="display:none;">
+<nav>
+    <button onclick="goToSection('taskSection')">
+        Tasks
+    </button>
+
+    <button onclick="goToSection('managerSection')">
+        Manager
+    </button>
+
+    <button onclick="goToSection('materialSection')">
+        Materials
+    </button>
+
+    <button onclick="goToSection('pmSection')">
+        Preventive Maintenance
+    </button>
+
+    <button onclick="goToSection('reportSection')">
+        Weekly Report
+    </button>
+</nav>
+
+<hr>
+
+    <h1>AGP POULTRY PLC</h1>
+    <h2>Maintenance Management System</h2>
+
+    <hr>
+
+  <div id="taskSection">
+<h3>1. Technician Task Assignment</h3>
+
+    <label>Technician Name:</label><br>
+    <input type="text" id="technicianName">
+    <br><br>
+
+    <label>Task:</label><br>
+    <input type="text" id="task">
+    <br><br>
+
+    <label>Task Type:</label><br>
+    <select id="taskType">
+        <option value="">Select Task Type</option>
+        <option value="Corrective Maintenance">Corrective Maintenance</option>
+        <option value="Preventive Maintenance">Preventive Maintenance</option>
+        <option value="Inspection">Inspection</option>
+        <option value="Installation">Installation</option>
+        <option value="Emergency">Emergency</option>
+    </select>
+    <br><br>
+
+    <label>Equipment:</label><br>
+    <input type="text" id="equipment">
+    <br><br>
+
+    <label>Priority:</label><br>
+    <select id="priority">
+        <option value="">Select Priority</option>
+        <option value="High">High</option>
+        <option value="Medium">Medium</option>
+        <option value="Low">Low</option>
+    </select>
+    <br><br>
+
+    <label>Due Date:</label><br>
+    <input type="date" id="dueDate">
+    <br><br>
+
+    <button onclick="saveTask()">Save Task</button>
+
+    <hr>
+
+    <h3>Assigned Tasks</h3>
+
+    <div id="taskList">
+        No tasks entered yet.
+    </div>
+  <hr>
+ </div>
+
+<div id="managerSection"> 
+
+<h3>2. Manager Accepted Tasks</h3>
+
+<label>Select Task:</label><br>
+
+<select id="managerTask">
+    <option value="">Select a task</option>
+</select>
+
+<br><br>
+
+<label>Manager Decision:</label><br>
+
+<select id="managerDecision">
+    <option value="">Select Decision</option>
+    <option value="Accepted">Accepted</option>
+    <option value="Rejected">Rejected</option>
+</select>
+
+<br><br>
+
+<label>Manager Comment:</label><br>
+
+<textarea id="managerComment"
+          rows="4"
+          cols="30"></textarea>
+
+<br><br>
+
+<button onclick="managerApproveTask()">
+    Save Manager Decision
+</button>
+
+<br><br>
+
+<div id="managerTaskList">
+    No manager decisions yet.
+</div>  
+<hr>
+</div>
+
+</div>
+
+<div id="materialSection">
+
+<h3>3. Material Used</h3>
+
+<label>Technician Name:</label><br>
+<input type="text" id="materialTechnician">
+<br><br>
+<label>Task:</label><br>
+
+<select id="materialTask">
+    <option value="">Select Task</option>
+</select>
+
+<br><br>
+
+<label>Material Name:</label><br>
+<input type="text" id="materialName">
+<br><br>
+
+<label>Quantity:</label><br>
+<input type="number" id="materialQuantity">
+<br><br>
+
+<label>Unit:</label><br>
+<select id="materialUnit">
+    <option value="">Select Unit</option>
+    <option value="pcs">pcs</option>
+    <option value="meter">meter</option>
+    <option value="kg">kg</option>
+    <option value="liter">liter</option>
+    <option value="set">set</option>
+    <option value="roll">roll</option>
+    <option value="box">box</option>
+</select>
+
+<br><br>
+
+<button onclick="saveMaterial()">
+    Save Material
+</button>
+
+<hr>
+
+<h3>Material Usage List</h3>
+
+<div id="materialList">
+    No material entered yet.
+</div>
+<hr>
+
+</div>
+
+<div id="pmSection">
+<h3>4. Preventive Maintenance</h3>
+
+<label>Equipment:</label><br>
+<input type="text" id="pmEquipment">
+<br><br>
+
+<label>Maintenance Activity:</label><br>
+<input type="text" id="pmActivity">
+<br><br>
+
+<label>Frequency:</label><br>
+<select id="pmFrequency">
+    <option value="">Select Frequency</option>
+    <option value="Weekly">Weekly</option>
+    <option value="Monthly">Monthly</option>
+    <option value="3 Month">3 Month</option>
+    <option value="6 Month">6 Month</option>
+</select>
+
+<br><br>
+
+<label>Responsible Technician:</label><br>
+<input type="text" id="pmTechnician">
+<br><br>
+
+<label>Planned Date:</label><br>
+<input type="date" id="pmDate">
+<br><br>
+
+<button onclick="savePM()">
+    Save Preventive Maintenance
+</button>
+
+<hr>
+
+<h3>Preventive Maintenance Schedule</h3>
+
+<div id="pmList">
+    No preventive maintenance entered yet.
+</div>
+<hr>
+
+<h3>5. Preventive Maintenance Status</h3>
+
+<div id="pmStatusDashboard">
+    No preventive maintenance data.
+</div>
+<hr>
+</div>
+
+<div id="reportSection">
+<h3>6. Weekly Report</h3>
+
+<label>Report Week:</label><br>
+<input type="week" id="reportWeek">
+<br><br>
+
+<label>Prepared By:</label><br>
+<input type="text" id="reportPreparedBy">
+<br><br>
+
+<label>Major Work Completed:</label><br>
+<textarea id="reportCompleted" rows="5" cols="30"></textarea>
+<br><br>
+
+<label>Problems / Breakdowns:</label><br>
+<textarea id="reportProblems" rows="5" cols="30"></textarea>
+<br><br>
+
+<label>Materials Used:</label><br>
+<textarea id="reportMaterials" rows="5" cols="30"></textarea>
+<br><br>
+
+<label>Recommendations:</label><br>
+<textarea id="reportRecommendations" rows="5" cols="30"></textarea>
+<br><br>
+
+<button onclick="saveWeeklyReport()">
+    Save Weekly Report
+</button>
+
+<hr>
+
+<h3>Weekly Reports</h3>
+
+<div id="weeklyReportList">
+    No weekly report entered yet.
+</div>
+<script>
+alert("JAVASCRIPT IS WORKING");
+const SUPABASE_URL = "https://xkqpjtjulreybikdzruu.supabase.co";
+
+const SUPABASE_KEY = "sb_publishable_Ok9DHG-k5T5J7TUE0B870g_WbtlCm3g";
+
+const supabaseClient =
+    supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+    );
+ async function loginUser() {
+
+    const email =
+        document.getElementById("loginEmail").value.trim();
+
+    const password =
+        document.getElementById("loginPassword").value;
+
+    const message =
+        document.getElementById("loginMessage");
+
+    if (email === "" || password === "") {
+        message.innerText = "Please enter email and password.";
+        return;
+    }
+
+    const { data, error } =
+        await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+
+    if (error) {
+        message.innerText =
+            "LOGIN ERROR: " + error.message;
+
+        console.log(error);
+        return;
+    }
+
+    message.innerText = "Login successful!";
+
+    showApp();
+}
+async function resetPassword() {
+
+    const email =
+        document.getElementById("loginEmail").value.trim();
+
+    const message =
+        document.getElementById("loginMessage");
+
+    if (email === "") {
+        message.innerText =
+            "Please enter your email first.";
+        return;
+    }
+
+    const { error } =
+        await supabaseClient.auth.resetPasswordForEmail(
+            email,
+            {
+                redirectTo: window.location.href
+            }
+        );
+
+    if (error) {
+        message.innerText =
+            "RESET ERROR: " + error.message;
+        console.log(error);
+        return;
+    }
+
+    message.innerText =
+        "Password reset email sent. Check your email.";
+}
+
+function showApp() {
+
+    document.getElementById("loginSection").style.display =
+        "none";
+
+    document.getElementById("appSection").style.display =
+        "block";
+}
+
+
+async function checkLogin() {
+
+    const { data } =
+        await supabaseClient.auth.getSession();
+
+    if (data.session) {
+        showApp();
+    }
+}
+
+
+// Check existing login when page opens
+checkLogin();   
+alert("Supabase connection code is running");
+let tasks = [];
+async function saveTask() {
+
+    const technician =
+        document.getElementById("technicianName").value.trim();
+
+    const task =
+        document.getElementById("task").value.trim();
+
+    const taskType =
+        document.getElementById("taskType").value;
+
+    const priority =
+        document.getElementById("priority").value;
+
+    if (technician === "" || task === "") {
+        alert("Please enter Technician Name and Task.");
+        return;
+    }
+
+    // Get logged-in user
+    const { data: userData, error: userError } =
+        await supabaseClient.auth.getUser();
+
+    if (userError || !userData.user) {
+        alert("Please login again.");
+        return;
+    }
+
+    const assignedBy = userData.user.id;
+
+    // Find technician in profiles
+    const { data: technicianData, error: technicianError } =
+        await supabaseClient
+            .from("profiles")
+            .select("id")
+            .eq("full_name", technician)
+            .single();
+
+    if (technicianError || !technicianData) {
+        alert("Technician not found in Profiles: " + technician);
+        console.log(technicianError);
+        return;
+    }
+
+    // Create task number
+    const taskNumber = "TASK-" + Date.now();
+
+    // 1. Save the task
+    const { data: taskData, error: taskError } =
+        await supabaseClient
+            .from("tasks")
+            .insert([
+                {
+                    task_number: taskNumber,
+                    title: task,
+                    description: taskType,
+                    priority: priority,
+                    status: "Assigned"
+                }
+            ])
+            .select()
+            .single();
+
+    if (taskError) {
+        alert("TASK SAVE ERROR: " + taskError.message);
+        console.log(taskError);
+        return;
+    }
+
+    // 2. Save technician assignment
+    const { error: assignmentError } =
+        await supabaseClient
+            .from("task_assignments")
+            .insert([
+                {
+                    task_id: taskData.id,
+                    technician_id: technicianData.id,
+                    assigned_by: assignedBy
+                }
+            ]);
+
+    if (assignmentError) {
+        alert("ASSIGNMENT ERROR: " + assignmentError.message);
+        console.log(assignmentError);
+        return;
+    }
+
+    alert("Task and Technician assigned successfully!");
+
+    console.log("Task:", taskData);
+    console.log("Technician:", technicianData);
+}
+function managerApproveTask() {
+
+    const taskId =
+        document.getElementById("managerTask").value;
+
+    const decision =
+        document.getElementById("managerDecision").value;
+
+    const comment =
+        document.getElementById("managerComment").value;
+
+    if (taskId === "" || decision === "") {
+
+        alert("Please select a task and manager decision.");
+
+        return;
+    }
+
+    const selectedTask =
+        tasks.find(function(item) {
+
+            return item.id == taskId;
+
+        });
+
+    if (!selectedTask) {
+        return;
+    }
+
+    const managerDecision = {
+
+        id: Date.now(),
+
+        taskId: taskId,
+
+        technician: selectedTask.technician,
+
+        task: selectedTask.task,
+
+        equipment: selectedTask.equipment,
+
+        decision: decision,
+
+        comment: comment
+    };
+
+    managerDecisions.push(managerDecision);
+
+    showManagerDecisions();
+
+    document.getElementById("managerTask").value = "";
+
+    document.getElementById("managerDecision").value = "";
+
+    document.getElementById("managerComment").value = "";
+}
+
+
+function showManagerDecisions() {
+
+    const list =
+        document.getElementById("managerTaskList");
+
+    if (managerDecisions.length === 0) {
+
+        list.innerHTML =
+            "No manager decisions yet.";
+
+        return;
+    }
+
+    let html =
+        "<table border='1' width='100%'>";
+
+    html += `
+        <tr>
+            <th>Technician</th>
+            <th>Task</th>
+            <th>Equipment</th>
+            <th>Decision</th>
+            <th>Comment</th>
+        </tr>
+    `;
+
+    managerDecisions.forEach(function(item) {
+
+        html += `
+            <tr>
+                <td>${item.technician}</td>
+                <td>${item.task}</td>
+                <td>${item.equipment}</td>
+                <td>${item.decision}</td>
+                <td>${item.comment}</td>
+            </tr>
+        `;
+    });
+
+    html += "</table>";
+
+    list.innerHTML = html;
+}
+let materials = [];
+
+
+function saveMaterial() {
+
+    const technician =
+        document.getElementById("materialTechnician").value;
+
+    const task =
+        document.getElementById("materialTask").value;
+
+    const material =
+        document.getElementById("materialName").value;
+
+    const quantity =
+        document.getElementById("materialQuantity").value;
+
+    const unit =
+        document.getElementById("materialUnit").value;
+
+
+    if (technician === "" ||
+        material === "" ||
+        quantity === "") {
+
+        alert("Please enter Technician, Material and Quantity.");
+
+        return;
+    }
+
+
+    const newMaterial = {
+
+        id: Date.now(),
+
+        technician: technician,
+
+        task: task,
+
+        material: material,
+
+        quantity: quantity,
+
+        unit: unit
+    };
+
+
+    materials.push(newMaterial);
+
+    showMaterials();
+
+
+    document.getElementById("materialTechnician").value = "";
+
+    document.getElementById("materialTask").value = "";
+
+    document.getElementById("materialName").value = "";
+
+    document.getElementById("materialQuantity").value = "";
+
+    document.getElementById("materialUnit").value = "";
+}
+
+
+function showMaterials() {
+
+    const list =
+        document.getElementById("materialList");
+
+
+    if (materials.length === 0) {
+
+        list.innerHTML =
+            "No material entered yet.";
+
+        return;
+    }
+
+
+    let html =
+        "<table border='1' width='100%'>";
+
+
+    html += `
+        <tr>
+            <th>Technician</th>
+            <th>Task</th>
+            <th>Material</th>
+            <th>Quantity</th>
+            <th>Unit</th>
+            <th>Action</th>
+        </tr>
+    `;
+
+
+    materials.forEach(function(item) {
+
+        html += `
+            <tr>
+                <td>${item.technician}</td>
+                <td>${item.task}</td>
+                <td>${item.material}</td>
+                <td>${item.quantity}</td>
+                <td>${item.unit}</td>
+                <td>
+                    <button onclick="deleteMaterial(${item.id})">
+                        Delete
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+
+
+    html += "</table>";
+
+
+    list.innerHTML = html;
+}
+
+
+function deleteMaterial(id) {
+
+    materials = materials.filter(function(item) {
+
+        return item.id !== id;
+
+    });
+
+
+    showMaterials();
+}
+function updateMaterialTaskList() {
+
+    const select =
+        document.getElementById("materialTask");
+
+    select.innerHTML =
+        '<option value="">Select Task</option>';
+
+    tasks.forEach(function(item) {
+
+        select.innerHTML +=
+            '<option value="' + item.task + '">' +
+            item.technician + " - " +
+            item.task +
+            '</option>';
+    });
+}
+let preventiveTasks = [];
+
+
+function savePM() {
+
+    const equipment =
+        document.getElementById("pmEquipment").value;
+
+    const activity =
+        document.getElementById("pmActivity").value;
+
+    const frequency =
+        document.getElementById("pmFrequency").value;
+
+    const technician =
+        document.getElementById("pmTechnician").value;
+
+    const date =
+        document.getElementById("pmDate").value;
+
+
+    if (equipment === "" ||
+        activity === "" ||
+        frequency === "" ||
+        technician === "" ||
+        date === "") {
+
+        alert("Please complete all Preventive Maintenance fields.");
+
+        return;
+    }
+
+
+    const newPM = {
+
+        id: Date.now(),
+
+        equipment: equipment,
+
+        activity: activity,
+
+        frequency: frequency,
+
+        technician: technician,
+
+        date: date,
+
+        status: "Planned"
+    };
+
+
+    preventiveTasks.push(newPM);
+
+   showPM();
+showPMStatusDashboard(); 
+
+    clearPMForm();
+}
+
+
+function clearPMForm() {
+
+    document.getElementById("pmEquipment").value = "";
+
+    document.getElementById("pmActivity").value = "";
+
+    document.getElementById("pmFrequency").value = "";
+
+    document.getElementById("pmTechnician").value = "";
+
+    document.getElementById("pmDate").value = "";
+}
+
+
+function showPM() {
+
+    const list =
+        document.getElementById("pmList");
+
+
+    if (preventiveTasks.length === 0) {
+
+        list.innerHTML =
+            "No preventive maintenance entered yet.";
+
+        return;
+    }
+
+
+    let html =
+        "<table border='1' width='100%'>";
+
+
+    html += `
+        <tr>
+            <th>Equipment</th>
+            <th>Activity</th>
+            <th>Frequency</th>
+            <th>Technician</th>
+            <th>Planned Date</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    `;
+
+
+    preventiveTasks.forEach(function(item) {
+
+        html += `
+            <tr>
+
+                <td>${item.equipment}</td>
+
+                <td>${item.activity}</td>
+
+                <td>${item.frequency}</td>
+
+                <td>${item.technician}</td>
+
+                <td>${item.date}</td>
+
+                <td>
+                    <select
+                        onchange="changePMStatus(${item.id}, this.value)">
+
+                        <option value="Planned"
+                        ${item.status === "Planned" ? "selected" : ""}>
+                        Planned
+                        </option>
+
+                        <option value="In Progress"
+                        ${item.status === "In Progress" ? "selected" : ""}>
+                        In Progress
+                        </option>
+
+                        <option value="Completed"
+                        ${item.status === "Completed" ? "selected" : ""}>
+                        Completed
+                        </option>
+
+                        <option value="Overdue"
+                        ${item.status === "Overdue" ? "selected" : ""}>
+                        Overdue
+                        </option>
+
+                    </select>
+                </td>
+
+                <td>
+                    <button
+                        onclick="deletePM(${item.id})">
+                        Delete
+                    </button>
+                </td>
+
+            </tr>
+        `;
+    });
+
+
+    html += "</table>";
+
+    list.innerHTML = html;
+}
+
+
+function changePMStatus(id, newStatus) {
+
+    const task =
+        preventiveTasks.find(function(item) {
+
+            return item.id === id;
+
+        });
+
+
+    if (task) {
+
+        task.status = newStatus;
+
+    }
+
+
+    showPM();
+}
+
+
+function deletePM(id) {
+
+    preventiveTasks =
+        preventiveTasks.filter(function(item) {
+
+            return item.id !== id;
+
+        });
+
+
+    showPM();
+}
+function showPMStatusDashboard() {
+
+    let planned = 0;
+    let inProgress = 0;
+    let completed = 0;
+    let overdue = 0;
+
+    preventiveTasks.forEach(function(item) {
+
+        if (item.status === "Planned") {
+            planned++;
+        }
+
+        if (item.status === "In Progress") {
+            inProgress++;
+        }
+
+        if (item.status === "Completed") {
+            completed++;
+        }
+
+        if (item.status === "Overdue") {
+            overdue++;
+        }
+    });
+
+
+    const dashboard =
+        document.getElementById("pmStatusDashboard");
+
+    dashboard.innerHTML = `
+        <table border="1" width="100%">
+
+            <tr>
+                <th>Status</th>
+                <th>Number of Tasks</th>
+            </tr>
+
+            <tr>
+                <td>Planned</td>
+                <td>${planned}</td>
+            </tr>
+
+            <tr>
+                <td>In Progress</td>
+                <td>${inProgress}</td>
+            </tr>
+
+            <tr>
+                <td>Completed</td>
+                <td>${completed}</td>
+            </tr>
+
+            <tr>
+                <td>Overdue</td>
+                <td>${overdue}</td>
+            </tr>
+
+        </table>
+    `;
+}
+let weeklyReports = [];
+
+
+function saveWeeklyReport() {
+
+    const week =
+        document.getElementById("reportWeek").value;
+
+    const preparedBy =
+        document.getElementById("reportPreparedBy").value;
+
+    const completed =
+        document.getElementById("reportCompleted").value;
+
+    const problems =
+        document.getElementById("reportProblems").value;
+
+    const materials =
+        document.getElementById("reportMaterials").value;
+
+    const recommendations =
+        document.getElementById("reportRecommendations").value;
+
+
+    if (week === "" || preparedBy === "") {
+
+        alert("Please enter Report Week and Prepared By.");
+
+        return;
+    }
+
+
+    const report = {
+
+        id: Date.now(),
+
+        week: week,
+
+        preparedBy: preparedBy,
+
+        completed: completed,
+
+        problems: problems,
+
+        materials: materials,
+
+        recommendations: recommendations
+    };
+
+
+    weeklyReports.push(report);
+
+    showWeeklyReports();
+
+    clearWeeklyReport();
+}
+
+
+function clearWeeklyReport() {
+
+    document.getElementById("reportWeek").value = "";
+
+    document.getElementById("reportPreparedBy").value = "";
+
+    document.getElementById("reportCompleted").value = "";
+
+    document.getElementById("reportProblems").value = "";
+
+    document.getElementById("reportMaterials").value = "";
+
+    document.getElementById("reportRecommendations").value = "";
+}
+
+
+function showWeeklyReports() {
+
+    const list =
+        document.getElementById("weeklyReportList");
+
+
+    if (weeklyReports.length === 0) {
+
+        list.innerHTML =
+            "No weekly report entered yet.";
+
+        return;
+    }
+
+
+    let html = "";
+
+
+    weeklyReports.forEach(function(report) {
+
+        html += `
+            <div>
+
+                <h4>
+                    Weekly Report:
+                    ${report.week}
+                </h4>
+
+                <p>
+                    <b>Prepared By:</b>
+                    ${report.preparedBy}
+                </p>
+
+                <p>
+                    <b>Major Work Completed:</b><br>
+                    ${report.completed}
+                </p>
+
+                <p>
+                    <b>Problems / Breakdowns:</b><br>
+                    ${report.problems}
+                </p>
+
+                <p>
+                    <b>Materials Used:</b><br>
+                    ${report.materials}
+                </p>
+
+                <p>
+                    <b>Recommendations:</b><br>
+                    ${report.recommendations}
+                </p>
+
+                <button
+                    onclick="deleteWeeklyReport(${report.id})">
+                    Delete Report
+                </button>
+
+                <hr>
+
+            </div>
+        `;
+    });
+
+
+    list.innerHTML = html;
+}
+
+
+function deleteWeeklyReport(id) {
+
+    weeklyReports =
+        weeklyReports.filter(function(report) {
+
+            return report.id !== id;
+
+        });
+
+
+    showWeeklyReports();
+}
+function goToSection(sectionId) {
+
+    const section =
+        document.getElementById(sectionId);
+
+    if (section) {
+
+        section.scrollIntoView({
+            behavior: "smooth"
+        });
+    }
+}
+</script>
+</div>
+</body>
+</html>
