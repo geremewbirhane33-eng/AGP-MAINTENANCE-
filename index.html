@@ -460,16 +460,16 @@ function showApp() {
 
 
 async function checkLogin() {
-
-    const { data } =
+    const { data, error } =
         await supabaseClient.auth.getSession();
 
-    if (data.session) {
+    if (error || !data.session) {
+        document.getElementById("loginSection").style.display = "block";
+        document.getElementById("appSection").style.display = "none";
+    } else {
         showApp();
     }
 }
-
-
 // Check existing login when page opens
 checkLogin();   
 alert("Supabase connection code is running");
