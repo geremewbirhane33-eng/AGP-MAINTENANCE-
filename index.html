@@ -380,6 +380,81 @@ async function resetPassword() {
         "Password reset email sent. Check your email.";
 }
 
+let recoveryMode = false;
+
+supabaseClient.auth.onAuthStateChange((event, session) => {
+    if (event === "PASSWORD_RECOVERY" && session) {
+        recoveryMode = true;
+
+        const message = document.getElementById("loginMessage");
+        if (message) {
+            message.innerText =
+                "Recovery verified. Enter your new password.";
+        }
+
+        showPasswordForm();
+    }
+});
+
+function showPasswordForm() {
+    let form = document.getElementById("passwordResetSection");
+
+    if (!form) {
+        form = document.createElement("div");
+        form.id = "passwordResetSection";
+
+        form.innerHTML = `
+            <h2>Set New Password</h2>
+            <input id="newPassword"
+                   type="password"
+                   placeholder="Enter new password"
+                   minlength="8">
+            <br><br>
+            <button onclick="saveNewPassword()">
+                Save New Password
+            </button>
+            <p id="passwordResetMessage"></p>
+        `;
+
+        document.body.appendChild(form);
+    }
+
+    document.getElementById("loginSection").style.display = "none";
+    form.style.display = "block";
+}
+
+async function saveNewPassword() {
+    const password =
+        document.getElementById("newPassword").value;
+    const message =
+        document.getElementById("passwordResetMessage");
+
+    if (!recoveryMode) {
+        message.innerText =
+            "Please open a valid password-reset email link first.";
+        return;
+    }
+
+    if (password.length < 8) {
+        message.innerText =
+            "Use at least 8 characters.";
+        return;
+    }
+
+    const { error } = await supabaseClient.auth.updateUser({
+        password: password
+    });
+
+    if (error) {
+        message.innerText = "UPDATE ERROR: " + error.message;
+        return;
+    }
+
+    recoveryMode = false;
+    message.innerText =
+        "Password updated successfully. Return to login and sign in.";
+}
+
 function showApp() {
 
     document.getElementById("loginSection").style.display =
