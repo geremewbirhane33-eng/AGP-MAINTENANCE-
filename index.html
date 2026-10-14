@@ -471,98 +471,110 @@ async function checkLogin() {
 checkLogin();   
 alert("Supabase connection code is running");
 let tasks = [];
+    
 async function saveTask() {
+    const technician = document
+        .getElementById("technicianName").value.trim();
 
-    const technician =
-        document.getElementById("technicianName").value.trim();
+    const task = document
+        .getElementById("task").value.trim();
 
-    const task =
-        document.getElementById("task").value.trim();
+    const taskType = document
+        .getElementById("taskType").value;
 
-    const taskType =
-        document.getElementById("taskType").value;
+    const priority = document
+        .getElementById("priority").value;
 
-    const priority =
-        document.getElementById("priority").value;
-
-    if (technician === "" || task === "") {
+    if (!technician || !task) {
         alert("Please enter Technician Name and Task.");
         return;
     }
 
-    // Get logged-in user
-    const { data: userData, error: userError } =
-        await supabaseClient.auth.getUser();
+    try {
+        // 1. Check logged-in user
+        const { data: userData, error: userError } =
+            await supabaseClient.auth.getUser();
 
-    if (userError || !userData.user) {
-        alert("Please login again.");
-        return;
-    }
+        if (userError || !userData.user) {
+            alert("Please login again.");
+            return;
+        }
 
-    const assignedBy = userData.user.id;
+        const assignedBy = userData.user.id;
 
-    // Find technician in profiles
-    const { data: technicianData, error: technicianError } =
-        await supabaseClient
-            .from("profiles")
-            .select("id")
-            .eq("full_name", technician)
-            .single();
+        // 2. Find technician profile
+        const { data: technicianData, error: technicianError } =
+            await supabaseClient
+                .from("profiles")
+                .select("id")
+                .eq("full_name", technician)
+                .single();
 
-    if (technicianError || !technicianData) {
-        alert("Technician not found in Profiles: " + technician);
-        console.log(technicianError);
-        return;
-    }
+        if (technicianError || !technicianData) {
+            alert("Technician not found in Profiles: " + technician);
+            console.error(technicianError);
+            return;
+        }
 
-    // Create task number
-    const taskNumber = "TASK-" + Date.now();
+        // 3. Save task
+        const taskNumber = "TASK-" + Date.now();
 
-    // 1. Save the task
-    const { data: taskData, error: taskError } =
-        await supabaseClient
-            .from("tasks")
-            .insert([
-                {
+        const { data: taskData, error: taskError } =
+            await supabaseClient
+                .from("tasks")
+                .insert({
                     task_number: taskNumber,
                     title: task,
                     description: taskType,
                     priority: priority,
                     status: "Assigned"
-                }
-            ])
-            .select()
-            .single();
+                })
+                .select("id, task_number, title")
+                .single();
 
-    if (taskError) {
-        alert("TASK SAVE ERROR: " + taskError.message);
-        console.log(taskError);
-        return;
-    }
+        if (taskError) {
+            alert("TASK SAVE ERROR: " + taskError.message);
+            console.error(taskError);
+            return;
+        }
 
-    // 2. Save technician assignment
-    const { error: assignmentError } =
-        await supabaseClient
-            .from("task_assignments")
-            .insert([
-                {
+        // 4. Assign task to technician
+        const { error: assignmentError } =
+            await supabaseClient
+                .from("task_assignments")
+                .insert({
                     task_id: taskData.id,
                     technician_id: technicianData.id,
                     assigned_by: assignedBy
-                }
-            ]);
+                });
 
-    if (assignmentError) {
-        alert("ASSIGNMENT ERROR: " + assignmentError.message);
-        console.log(assignmentError);
-        return;
+        if (assignmentError) {
+            alert(
+                "TASK SAVED, BUT ASSIGNMENT FAILED.\n" +
+                "Task ID: " + taskData.id + "\n" +
+                assignmentError.message
+            );
+            console.error(assignmentError);
+            return;
+        }
+
+        // 5. Success
+        alert(
+            "TASK ASSIGNED SUCCESSFULLY!\n\n" +
+            "Task: " + taskData.title + "\n" +
+            "Task Number: " + taskData.task_number + "\n" +
+            "Technician: " + technician
+        );
+
+        console.log("Saved task:", taskData);
+        console.log("Assigned technician:", technicianData);
+
+    } catch (error) {
+        console.error("Unexpected error:", error);
+        alert("UNEXPECTED ERROR: " + error.message);
     }
-
-    alert("Task and Technician assigned successfully!");
-
-    console.log("Task:", taskData);
-    console.log("Technician:", technicianData);
 }
+
 function managerApproveTask() {
 
     const taskId =
