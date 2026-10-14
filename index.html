@@ -503,6 +503,26 @@ async function saveTask() {
         const assignedBy = userData.user.id;
 
        // 2. Find technician profile
+        
+const { data: techProfile, error: techError } =
+    await supabase
+        .from("profiles")
+        .select("id, full_name")
+        .ilike("full_name", technician.trim() + "%")
+        .limit(2);
+
+if (techError) {
+    alert("Profile lookup error: " + techError.message);
+    return;
+}
+
+if (!techProfile || techProfile.length !== 1) {
+    alert("Technician not found or name is ambiguous: " + technician);
+    return;
+}
+
+const technicianId = techProfile[0].id;
+
     
         if (technicianError || !technicianData) {
             alert("Technician not found in Profiles: " + technician);
