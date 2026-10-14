@@ -502,14 +502,8 @@ async function saveTask() {
 
         const assignedBy = userData.user.id;
 
-        // 2. Find technician profile
-        const { data: technicianData, error: technicianError } =
-            await supabaseClient
-                .from("profiles")
-                .select("id")
-                .eq("full_name", technician)
-                .single();
-
+       // 2. Find technician profile
+    
         if (technicianError || !technicianData) {
             alert("Technician not found in Profiles: " + technician);
             console.error(technicianError);
