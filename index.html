@@ -455,20 +455,44 @@ function showApp() {
 }
 
 
-async function checkLogin() {
+
+async function initializeApp() {
+    const params = new URLSearchParams(window.location.search);
+    const hashParams = new URLSearchParams(
+        window.location.hash.replace(/^#/, "")
+    );
+
+    const isRecoveryLink =
+        params.get("type") === "recovery" ||
+        hashParams.get("type") === "recovery" ||
+        params.has("code");
+
     const { data, error } =
         await supabaseClient.auth.getSession();
 
-    if (error || !data.session) {
-        document.getElementById("loginSection").style.display = "block";
-        document.getElementById("appSection").style.display = "none";
-    } else {
+    if (error) {
+        document.getElementById("loginMessage").innerText =
+            "Session error: " + error.message;
+        return;
+    }
+
+    if (isRecoveryLink && data.session) {
+        recoveryMode = true;
+        showPasswordForm();
+
+        document.getElementById("passwordResetMessage").innerText =
+            "Enter your new password.";
+        return;
+    }
+
+    if (data.session) {
         showApp();
     }
 }
-// Check existing login when page opens
-checkLogin();   
-alert("Supabase connection code is running");
+
+initializeApp();
+
+    "Supabase connection code is running");
 let tasks = [];
     
 async function saveTask() {
