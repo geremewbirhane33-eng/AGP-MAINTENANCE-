@@ -502,8 +502,6 @@ async function saveTask() {
         const assignedBy = userData.user.id;
 
        // 2. Find technician profile
-        
-        // 2. Find technician profile
         const { data: techProfile, error: techError } =
             await supabaseClient
                 .from("profiles")
