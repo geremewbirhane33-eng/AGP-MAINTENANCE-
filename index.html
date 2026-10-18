@@ -562,8 +562,7 @@ async function saveTask() {
                 "Task ID: " + taskData.id + "\n" +
                 assignmentError.message
             );
-            console.error(assignmentError);
-            return;
+           console.log("Assigned technician:", techProfile[0]);            return;
         }
 
         // 5. Success
