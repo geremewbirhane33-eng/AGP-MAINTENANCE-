@@ -555,8 +555,7 @@ async function saveTask() {
                 .from("task_assignments")
                 .insert({
                     task_id: taskData.id,
-                    technician_id: technicianData.id,
-                    assigned_by: assignedBy
+                    technician_id: technicianId,                 assigned_by: assignedBy
                 });
 
         if (assignmentError) {
