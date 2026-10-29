@@ -30,7 +30,7 @@
 
 </div>  
 
-<div id="appSection" style="display:block;">
+<div id="appSection" style="display:none;">
 <nav>
     <button onclick="goToSection('taskSection')">
         Tasks
@@ -48,10 +48,14 @@
         Preventive Maintenance
     </button>
 
+   
     <button onclick="goToSection('reportSection')">
         Weekly Report
     </button>
+
+    <button onclick="logoutUser()">Logout</button>
 </nav>
+ 
 
 <hr>
 
@@ -89,9 +93,10 @@
     <label>Priority:</label><br>
     <select id="priority">
         <option value="">Select Priority</option>
-        <option value="High">High</option>
-        <option value="Medium">Medium</option>
-        <option value="Low">Low</option>
+    <option value="Urgent">Urgent</option>
+<option value="High">High</option>
+<option value="Normal">Normal</option>
+<option value="Low">Low</option>    
     </select>
     <br><br>
 
@@ -108,6 +113,38 @@
     <div id="taskList">
         No tasks entered yet.
     </div>
+
+    <hr>
+
+    <h3>Technician Task Progress</h3>
+
+    <label>Assigned Task:</label><br>
+    <select id="technicianTaskSelect">
+        <option value="">Select Your Assigned Task</option>
+    </select>
+    <br><br>
+
+    <label>Progress Status:</label><br>
+    <select id="technicianProgressStatus">
+        <option value="">Select Progress</option>
+        <option value="In Progress">In Progress</option>
+        <option value="Waiting Material">Waiting Material</option>
+        <option value="Completed">Completed</option>
+    </select>
+    <br><br>
+
+    <label>Work Report / Comment:</label><br>
+    <textarea id="technicianProgressComment"
+              rows="4"
+              placeholder="Describe work done or materials needed"></textarea>
+    <br><br>
+
+    <button onclick="saveTechnicianProgress()">
+        Submit Progress
+    </button>
+
+    <div id="technicianProgressMessage"></div>
+
   <hr>
  </div>
 <div id="managerSection"> 
@@ -445,15 +482,13 @@ async function saveNewPassword() {
         "Password updated successfully. Return to login and sign in.";
 }
 
-function showApp() {
+async function showApp() {
+    document.getElementById("loginSection").style.display = "none";
+    document.getElementById("appSection").style.display = "block";
 
-    document.getElementById("loginSection").style.display =
-        "none";
-
-    document.getElementById("appSection").style.display =
-        "block";
+    await loadTasks();
+    await loadTechnicianTasks();
 }
-
 
 
 async function initializeApp() {
@@ -487,14 +522,68 @@ async function initializeApp() {
 
     if (data.session) {
         showApp();
+
+        // Load saved tasks from Supabase
+        await loadTasks();
     }
 }
 
 initializeApp();
 
-    "Supabase connection code is running");
+console.log("Supabase connection code is running");
+
 let tasks = [];
-    
+async function loadTasks() {
+    const { data, error } = await supabaseClient
+        .from("tasks")
+        .select("id, task_number, title, description, priority, status, created_at")
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        console.error("Error loading tasks:", error.message);
+        alert("Could not load tasks: " + error.message);
+        return;
+    }
+
+    tasks = data || [];
+
+    // Display saved tasks
+    const taskList = document.getElementById("taskList");
+
+    if (taskList) {
+        if (tasks.length === 0) {
+            taskList.innerHTML = "No tasks entered yet.";
+        } else {
+            taskList.innerHTML = tasks.map(task => `
+                <div style="border:1px solid #ccc; padding:10px; margin:8px 0;">
+                    <strong>${task.task_number || task.id} - ${task.title || ""}</strong><br>
+                    Description: ${task.description || ""}<br>
+                    Priority: ${task.priority || ""}<br>
+                    Status: ${task.status || "Assigned"}
+                </div>
+            `).join("");
+        }
+    }
+
+    // Fill Manager task dropdown
+    const managerTask = document.getElementById("managerTask");
+
+    if (managerTask) {
+        managerTask.innerHTML =
+            '<option value="">-- Select Task --</option>';
+
+        tasks
+            .filter(task => !["Accepted", "Rejected"].includes(task.status))
+            .forEach(task => {
+                const option = document.createElement("option");
+                option.value = task.id;
+                option.textContent =
+                    (task.task_number || task.id) + " - " + task.title;
+                managerTask.appendChild(option);
+            });
+    }
+}
+ 
 async function saveTask() {
     const technician = document
         .getElementById("technicianName").value.trim();
@@ -526,12 +615,14 @@ async function saveTask() {
         const assignedBy = userData.user.id;
 
        // 2. Find technician profile
-        const { data: techProfile, error: techError } =
-            await supabaseClient
-                .from("profiles")
-                .select("id, full_name")
-                .ilike("full_name", technician.trim())
-                .limit(2);
+        
+const { data: techProfile, error: techError } =
+    await supabaseClient
+        .from("profiles")
+        .select("id, full_name")
+        .ilike("full_name", technician.trim() + "%")
+        .limit(2);
+
 
         if (techError) {
             alert("Profile lookup error: " + techError.message);
@@ -572,21 +663,24 @@ async function saveTask() {
         }
 
         // 4. Assign task to technician
-        const { error: assignmentError } =
-            await supabaseClient
-                .from("task_assignments")
-                .insert({
-                    task_id: taskData.id,
-                    technician_id: technicianId,                 assigned_by: assignedBy
-                });
+    const { error: assignmentError } =
+    await supabaseClient
+        .from("task_assignments")
+        .insert({
+            task_id: taskData.id,
+            technician_id: technicianId,
+            assigned_by: assignedBy
+        });    
 
-        if (assignmentError) {
+                if (assignmentError) {
             alert(
                 "TASK SAVED, BUT ASSIGNMENT FAILED.\n" +
                 "Task ID: " + taskData.id + "\n" +
                 assignmentError.message
             );
-           console.log("Assigned technician:", techProfile[0]);            return;
+
+            console.error("Assignment error:", assignmentError);
+            return;
         }
 
         // 5. Success
@@ -598,7 +692,7 @@ async function saveTask() {
         );
 
         console.log("Saved task:", taskData);
-        console.log("Assigned technician:", technicianData);
+       console.log("Assigned technician:", techProfile[0]);
 
     } catch (error) {
         console.error("Unexpected error:", error);
@@ -606,7 +700,148 @@ async function saveTask() {
     }
 }
 
-function managerApproveTask() {
+async function loadTechnicianTasks() {
+    const dropdown = document.getElementById("technicianTaskSelect");
+
+    if (!dropdown) return;
+
+    dropdown.innerHTML =
+        '<option value="">Loading assigned tasks...</option>';
+
+    const { data: userData, error: userError } =
+        await supabaseClient.auth.getUser();
+
+    if (userError || !userData.user) {
+        dropdown.innerHTML =
+            '<option value="">Please log in again</option>';
+        return;
+    }
+
+    const { data, error } = await supabaseClient
+        .from("task_assignments")
+        .select(`
+            task_id,
+            technician_id,
+            tasks (
+                id,
+                task_number,
+                title,
+                status
+            )
+        `)
+        .eq("technician_id", userData.user.id);
+
+    if (error) {
+        console.error("Loading technician tasks failed:", error);
+        dropdown.innerHTML =
+            '<option value="">Could not load tasks</option>';
+
+        document.getElementById("technicianProgressMessage")
+            .innerText = error.message;
+        return;
+    }
+
+    dropdown.innerHTML =
+        '<option value="">Select Your Assigned Task</option>';
+
+    if (!data || data.length === 0) {
+        dropdown.innerHTML =
+            '<option value="">No tasks assigned to this account</option>';
+        return;
+    }
+
+    data.forEach(function (item) {
+        if (!item.tasks) return;
+
+        const option = document.createElement("option");
+        option.value = item.tasks.id;
+        option.textContent =
+            (item.tasks.task_number || "Task " + item.tasks.id) +
+            " - " + (item.tasks.title || "") +
+            " (" + (item.tasks.status || "") + ")";
+
+        dropdown.appendChild(option);
+    });
+}
+
+async function saveTechnicianProgress() {
+    const taskId = document.getElementById(
+        "technicianTaskSelect"
+    ).value;
+
+    const progressStatus = document.getElementById(
+        "technicianProgressStatus"
+    ).value;
+
+    const comment = document.getElementById(
+        "technicianProgressComment"
+    ).value.trim();
+
+    const message = document.getElementById(
+        "technicianProgressMessage"
+    );
+
+    if (!taskId || !progressStatus) {
+        alert("Please select a task and progress status.");
+        return;
+    }
+
+    const { data: userData, error: userError } =
+        await supabaseClient.auth.getUser();
+
+    if (userError || !userData.user) {
+        message.innerText = "Please log in again.";
+        return;
+    }
+
+    const allowedStatuses = [
+        "In Progress",
+        "Waiting Material",
+        "Completed"
+    ];
+
+    if (!allowedStatuses.includes(progressStatus)) {
+        message.innerText = "Invalid progress status.";
+        return;
+    }
+
+    const { data: assignment, error: assignmentError } =
+        await supabaseClient
+            .from("task_assignments")
+            .select("task_id")
+            .eq("task_id", taskId)
+            .eq("technician_id", userData.user.id)
+            .maybeSingle();
+
+    if (assignmentError || !assignment) {
+        message.innerText =
+            "This task is not assigned to your account.";
+        return;
+    }
+
+    const { error: updateError } = await supabaseClient
+        .from("tasks")
+        .update({
+            status: progressStatus
+        })
+        .eq("id", taskId);
+
+    if (updateError) {
+        message.innerText =
+            "Could not update task: " + updateError.message;
+        console.error(updateError);
+        return;
+    }
+
+    message.innerText =
+        "Task status updated to " + progressStatus +
+        ". Your comment: " + (comment || "No comment entered.");
+
+    await loadTechnicianTasks();
+    await loadTasks();
+}
+
+async function managerApproveTask() {
 
     const taskId =
         document.getElementById("managerTask").value;
@@ -615,98 +850,108 @@ function managerApproveTask() {
         document.getElementById("managerDecision").value;
 
     const comment =
-        document.getElementById("managerComment").value;
+        document.getElementById("managerComment").value.trim();
 
-    if (taskId === "" || decision === "") {
-
+    if (!taskId || !decision) {
         alert("Please select a task and manager decision.");
-
         return;
     }
 
-    const selectedTask =
-        tasks.find(function(item) {
+    const { data: userData, error: userError } =
+        await supabaseClient.auth.getUser();
 
-            return item.id == taskId;
-
-        });
-
-    if (!selectedTask) {
+    if (userError || !userData.user) {
+        alert("Please log in again.");
         return;
     }
 
-    const managerDecision = {
+    // Keep the task status within the allowed database values.
+    const { error } = await supabaseClient
+        .from("tasks")
+        .update({
+            manager_decision: decision,
+            manager_comment: comment,
+            manager_id: userData.user.id
+        })
+        .eq("id", taskId);
 
-        id: Date.now(),
+    if (error) {
+        alert("Could not save manager decision: " + error.message);
+        console.error(error);
+        return;
+    }
 
-        taskId: taskId,
-
-        technician: selectedTask.technician,
-
-        task: selectedTask.task,
-
-        equipment: selectedTask.equipment,
-
-        decision: decision,
-
-        comment: comment
-    };
-
-    managerDecisions.push(managerDecision);
-
-    showManagerDecisions();
+   
+    alert("Manager decision saved successfully!");
 
     document.getElementById("managerTask").value = "";
-
     document.getElementById("managerDecision").value = "";
-
     document.getElementById("managerComment").value = "";
+
+    await loadTasks();
+    await showManagerDecisions();
 }
+ 
+async function showManagerDecisions() {
 
+    const list = document.getElementById("managerTaskList");
 
-function showManagerDecisions() {
+    if (!list) return;
 
-    const list =
-        document.getElementById("managerTaskList");
+    list.innerHTML = "Loading manager decisions...";
 
-    if (managerDecisions.length === 0) {
+    const { data, error } = await supabaseClient
+        .from("tasks")
+        .select(`
+            id,
+            task_number,
+            title,
+            status,
+            manager_decision,
+            manager_comment
+        `)
+        .not("manager_decision", "is", null)
+        .order("created_at", { ascending: false });
 
+    if (error) {
+        console.error("Loading manager decisions failed:", error.message);
         list.innerHTML =
-            "No manager decisions yet.";
-
+            "Could not load manager decisions: " + error.message;
         return;
     }
 
-    let html =
-        "<table border='1' width='100%'>";
+    if (!data || data.length === 0) {
+        list.innerHTML = "No manager decisions yet.";
+        return;
+    }
 
-    html += `
-        <tr>
-            <th>Technician</th>
-            <th>Task</th>
-            <th>Equipment</th>
-            <th>Decision</th>
-            <th>Comment</th>
-        </tr>
+    let html = `
+        <table border="1" width="100%" style="border-collapse:collapse;">
+            <tr>
+                <th>Task Number</th>
+                <th>Task</th>
+                <th>Status</th>
+                <th>Decision</th>
+                <th>Comment</th>
+            </tr>
     `;
 
-    managerDecisions.forEach(function(item) {
-
+    data.forEach(function(item) {
         html += `
             <tr>
-                <td>${item.technician}</td>
-                <td>${item.task}</td>
-                <td>${item.equipment}</td>
-                <td>${item.decision}</td>
-                <td>${item.comment}</td>
+                <td>${item.task_number || item.id}</td>
+                <td>${item.title || ""}</td>
+                <td>${item.status || ""}</td>
+                <td>${item.manager_decision || ""}</td>
+                <td>${item.manager_comment || ""}</td>
             </tr>
         `;
     });
 
     html += "</table>";
-
     list.innerHTML = html;
 }
+
 let materials = [];
 
 
@@ -1271,21 +1516,43 @@ function deleteWeeklyReport(id) {
 
     showWeeklyReports();
 }
-function goToSection(sectionId) {
 
-    const section =
-        document.getElementById(sectionId);
+async function goToSection(sectionId) {
+
+    const section = document.getElementById(sectionId);
 
     if (section) {
-
         section.scrollIntoView({
             behavior: "smooth"
         });
     }
+
+    // Reload manager decisions when opening Manager section
+    if (
+        sectionId.toLowerCase().includes("manager") ||
+        sectionId.toLowerCase().includes("approval")
+    ) {
+        await showManagerDecisions();
+    }
 }
 
+async function logoutUser() {
+    const { error } = await supabaseClient.auth.signOut();
+
+    if (error) {
+        alert("Logout failed: " + error.message);
+        return;
+    }
+
+    document.getElementById("appSection").style.display = "none";
+    document.getElementById("loginSection").style.display = "block";
+
+    alert("You have logged out successfully.");
+}
+
+
+
 </script>
-</div>
 </div>
 </body>
 </html>
