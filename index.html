@@ -1554,13 +1554,11 @@ async function logoutUser() {
 
     alert("You have logged out successfully.");
 }
-async function resetEngidaPassword() {
-const { data, error } =
-    await supabaseClient.auth.getSession();
 
-console.log("Session:", error || data.session);
+async function resetEngidaPassword() {
+
     const newPassword = prompt(
-        "engida@2026! (minimum 12 characters):"
+        "Enter Engida's new password (minimum 12 characters):"
     );
 
     if (newPassword === null) return;
@@ -1570,7 +1568,9 @@ console.log("Session:", error || data.session);
         return;
     }
 
-    const confirmPassword = prompt("Enter the new password again:");
+    const confirmPassword = prompt(
+        "Enter the new password again:"
+    );
 
     if (newPassword !== confirmPassword) {
         alert("Passwords do not match.");
@@ -1585,7 +1585,7 @@ console.log("Session:", error || data.session);
         return;
     }
 
-    const { data, error } =
+    const { data: result, error: resetError } =
         await supabaseClient.functions.invoke(
             "reset-engida-password",
             {
@@ -1596,19 +1596,22 @@ console.log("Session:", error || data.session);
             }
         );
 
-    if (error) {
-        console.error("Password reset error:", error);
-        alert("PASSWORD RESET FAILED: " + error.message);
+    if (resetError) {
+        console.error("Password reset error:", resetError);
+        alert("PASSWORD RESET FAILED: " + resetError.message);
         return;
     }
 
-    if (data && data.success) {
+    if (result && result.success) {
         alert("Engida's password was successfully updated!");
     } else {
-        alert("Password reset failed: " +
-            (data?.message || "Unknown error"));
+        alert(
+            "Password reset failed: " +
+            (result?.message || "Unknown error")
+        );
     }
 }
+
 </script>
 </div>
 </body>
