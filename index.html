@@ -769,7 +769,9 @@ async function loadTechnicianTasks() {
     });
 }
 
+
 async function saveTechnicianProgress() {
+
     const taskId = document.getElementById(
         "technicianTaskSelect"
     ).value;
@@ -787,15 +789,8 @@ async function saveTechnicianProgress() {
     );
 
     if (!taskId || !progressStatus) {
-        alert("Please select a task and progress status.");
-        return;
-    }
-
-    const { data: userData, error: userError } =
-        await supabaseClient.auth.getUser();
-
-    if (userError || !userData.user) {
-        message.innerText = "Please log in again.";
+        message.innerText =
+            "Please select a task and progress status.";
         return;
     }
 
@@ -810,41 +805,93 @@ async function saveTechnicianProgress() {
         return;
     }
 
-    const { data: assignment, error: assignmentError } =
-        await supabaseClient
+    try {
+        const { data: userData, error: userError } =
+            await supabaseClient.auth.getUser();
+
+        if (userError || !userData.user) {
+            message.innerText = "Please log in again.";
+            return;
+        }
+
+        const userId = userData.user.id;
+
+        // Find this technician's assignment
+        const { data: assignment, error: assignmentError } =
+            await supabaseClient
+                .from("task_assignments")
+                .select("id, task_id")
+                .eq("task_id", taskId)
+                .eq("technician_id", userId)
+                .maybeSingle();
+
+        if (assignmentError || !assignment) {
+            message.innerText =
+                "This task is not assigned to your account.";
+            console.error(assignmentError);
+            return;
+        }
+
+        const completedAt =
+            progressStatus === "Completed"
+                ? new Date().toISOString()
+                : null;
+
+        // Save task status and completion time
+        const { error: taskError } = await supabaseClient
+            .from("tasks")
+            .update({
+                status: progressStatus,
+                completed_at: completedAt
+            })
+            .eq("id", taskId);
+
+        if (taskError) {
+            message.innerText =
+                "Task update failed: " + taskError.message;
+            console.error(taskError);
+            return;
+        }
+
+        // Save technician's work report
+        const { error: notesError } = await supabaseClient
             .from("task_assignments")
-            .select("task_id")
-            .eq("task_id", taskId)
-            .eq("technician_id", userData.user.id)
-            .maybeSingle();
+            .update({
+                notes: comment,
+                completed_at: completedAt
+            })
+            .eq("id", assignment.id)
+            .eq("technician_id", userId);
 
-    if (assignmentError || !assignment) {
+        if (notesError) {
+            message.innerText =
+                "Status saved, but report failed: " +
+                notesError.message;
+            console.error(notesError);
+            return;
+        }
+
         message.innerText =
-            "This task is not assigned to your account.";
-        return;
-    }
+            "Progress and work report saved successfully!";
 
-    const { error: updateError } = await supabaseClient
-        .from("tasks")
-        .update({
-            status: progressStatus
-        })
-        .eq("id", taskId);
+        document.getElementById(
+            "technicianProgressComment"
+        ).value = "";
 
-    if (updateError) {
+        document.getElementById(
+            "technicianProgressStatus"
+        ).value = "";
+
+        await loadTechnicianTasks();
+        await loadTasks();
+
+    } catch (error) {
+        console.error(error);
         message.innerText =
-            "Could not update task: " + updateError.message;
-        console.error(updateError);
-        return;
+            "Unexpected error: " + error.message;
     }
-
-    message.innerText =
-        "Task status updated to " + progressStatus +
-        ". Your comment: " + (comment || "No comment entered.");
-
-    await loadTechnicianTasks();
-    await loadTasks();
 }
+
 
 async function managerApproveTask() {
 
