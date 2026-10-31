@@ -54,6 +54,9 @@
     </button>
 
     <button onclick="logoutUser()">Logout</button>
+   <button onclick="resetEngidaPassword()">
+    Reset Engida Password
+</button> 
 </nav>
  
 
@@ -743,6 +746,8 @@ async function loadTechnicianTasks() {
 
     dropdown.innerHTML =
         '<option value="">Select Your Assigned Task</option>';
+         console.log("Logged-in technician ID:", userData.user.id);
+    console.log("Assignments returned:", data);   
 
     if (!data || data.length === 0) {
         dropdown.innerHTML =
@@ -1549,10 +1554,63 @@ async function logoutUser() {
 
     alert("You have logged out successfully.");
 }
+async function resetEngidaPassword() {
+const { data, error } =
+    await supabaseClient.auth.getSession();
 
+console.log("Session:", error || data.session);
+    const newPassword = prompt(
+        "engida@2026! (minimum 12 characters):"
+    );
 
+    if (newPassword === null) return;
 
+    if (newPassword.length < 12) {
+        alert("Password must contain at least 12 characters.");
+        return;
+    }
+
+    const confirmPassword = prompt("Enter the new password again:");
+
+    if (newPassword !== confirmPassword) {
+        alert("Passwords do not match.");
+        return;
+    }
+
+    const { data: sessionData, error: sessionError } =
+        await supabaseClient.auth.getSession();
+
+    if (sessionError || !sessionData.session) {
+        alert("Please log in with your supervisor account.");
+        return;
+    }
+
+    const { data, error } =
+        await supabaseClient.functions.invoke(
+            "reset-engida-password",
+            {
+                body: {
+                    email: "engidaadmasu17@gmail.com",
+                    newPassword: newPassword
+                }
+            }
+        );
+
+    if (error) {
+        console.error("Password reset error:", error);
+        alert("PASSWORD RESET FAILED: " + error.message);
+        return;
+    }
+
+    if (data && data.success) {
+        alert("Engida's password was successfully updated!");
+    } else {
+        alert("Password reset failed: " +
+            (data?.message || "Unknown error"));
+    }
+}
 </script>
 </div>
 </body>
 </html>
+
