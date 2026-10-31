@@ -1211,7 +1211,8 @@ function showPM() {
         </tr>
     `;
 
- preventiveTasks.forEach(function(item) {
+
+    preventiveTasks.forEach(function(item) {
 
         html += `
             <tr>
@@ -1586,7 +1587,7 @@ async function resetEngidaPassword() {
 
     const { data: result, error: resetError } =
         await supabaseClient.functions.invoke(
-            "reset-engida-password",
+            "reset-engida-password-",
             {
                 body: {
                     email: "engidaadmasu17@gmail.com",
