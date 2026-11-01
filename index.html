@@ -158,47 +158,52 @@
 
 </div>
 
-<div id="managerSection"> 
 
-<h3>2. Manager Accepted Tasks</h3>
+<div id="managerSection">
 
-<label>Select Task:</label><br>
+    <h3>2. Manager Accepted Tasks</h3>
 
-<select id="managerTask">
-    <option value="">Select a task</option>
-</select>
+    <!-- MANAGER APPROVAL FORM -->
+    <div id="managerApprovalForm">
 
-<br><br>
+        <label>Select Task:</label><br>
+        <select id="managerTask">
+            <option value="">Select a task</option>
+        </select>
 
-<label>Manager Decision:</label><br>
+        <br><br>
 
-<select id="managerDecision">
-    <option value="">Select Decision</option>
-    <option value="Accepted">Accepted</option>
-    <option value="Rejected">Rejected</option>
-</select>
+        <label>Manager Decision:</label><br>
+        <select id="managerDecision">
+            <option value="">Select Decision</option>
+            <option value="Accepted">Accepted</option>
+            <option value="Rejected">Rejected</option>
+        </select>
 
-<br><br>
+        <br><br>
 
-<label>Manager Comment:</label><br>
+        <label>Manager Comment:</label><br>
+        <textarea id="managerComment" rows="4" cols="30"></textarea>
 
-<textarea id="managerComment"
-          rows="4"
-          cols="30"></textarea>
+        <br><br>
 
-<br><br>
+        <button onclick="managerApproveTask()">
+            Save Manager Decision
+        </button>
 
-<button onclick="managerApproveTask()">
-    Save Manager Decision
-</button>
+        <hr>
+    </div>
 
-<br><br>
+    <!-- DECISION HISTORY: VIEW ONLY -->
+    <h3>Manager Decisions and Comments</h3>
 
-<div id="managerTaskList">
-    No manager decisions yet.
-</div>  
-<hr>
+    <div id="managerTaskList">
+        No manager decisions yet.
+    </div>
+
+    <hr>
 </div>
+
 <div id="materialSection">
 <h3>3. Material Used</h3>
 
@@ -603,7 +608,15 @@ function applyRolePermissions() {
             }
         });
     }
+    const approvalForm =
+        document.getElementById("managerApprovalForm");
 
+    if (approvalForm) {
+        approvalForm.style.display =
+            ["manager", "admin"].includes(currentUserRole)
+                ? "block"
+                : "none";
+    }
     console.log("Role permissions applied:", currentUserRole);
 }
 
