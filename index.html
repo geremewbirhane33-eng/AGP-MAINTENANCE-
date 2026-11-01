@@ -539,17 +539,18 @@ async function showApp() {
     await loadTasks();
     await loadTechnicianTasks();
 }
+
 function applyRolePermissions() {
 
     const sections = {
         taskSection: ["supervisor", "admin"],
-        managerSection: ["manager", "admin"],
+        managerSection: ["supervisor", "manager", "admin"],
         materialSection: ["supervisor", "store", "admin"],
         pmSection: ["supervisor", "technician", "admin"],
         reportSection: ["supervisor", "manager", "admin"]
     };
 
-    // Control section visibility
+    // Show or hide dashboard sections
     Object.entries(sections).forEach(([id, roles]) => {
         const section = document.getElementById(id);
 
@@ -559,11 +560,9 @@ function applyRolePermissions() {
         }
     });
 
-    // Control navigation buttons
+    // Show or hide navigation buttons
     document.querySelectorAll("nav button").forEach(button => {
-
         const action = button.getAttribute("onclick") || "";
-
         const match = action.match(/goToSection\('([^']+)'\)/);
 
         if (match) {
@@ -577,7 +576,7 @@ function applyRolePermissions() {
         }
     });
 
-    // Hide password reset from non-supervisors and non-admins
+    // Password reset: supervisor and admin only
     const resetButton = document.querySelector(
         "button[onclick='resetEngidaPassword()']"
     );
@@ -589,13 +588,25 @@ function applyRolePermissions() {
                 : "none";
     }
 
-    // Hide technician progress from management users
-    const technicianProgress = document.getElementById(
-        "technicianTaskSelect"
-    )?.closest("h3")?.parentElement;
+    // Hide approval controls from supervisor
+    if (currentUserRole === "supervisor") {
+        document.querySelectorAll(
+            "#managerSection button"
+        ).forEach(button => {
+            const action = button.getAttribute("onclick") || "";
+
+            if (
+                action.includes("managerApproveTask") ||
+                action.includes("managerRejectTask")
+            ) {
+                button.style.display = "none";
+            }
+        });
+    }
 
     console.log("Role permissions applied:", currentUserRole);
 }
+
 
 async function initializeApp() {
     const params = new URLSearchParams(window.location.search);
