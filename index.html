@@ -838,13 +838,28 @@ async function saveTechnicianProgress() {
                 : null;
 
         // Save task status and completion time
-        const { error: taskError } = await supabaseClient
-            .from("tasks")
-            .update({
-                status: progressStatus,
-                completed_at: completedAt
-            })
-            .eq("id", taskId);
+       const { data: updatedTask, error: taskError } =
+    await supabaseClient
+        .from("tasks")
+        .update({
+            status: progressStatus,
+            completed_at: completedAt
+        })
+        .eq("id", taskId)
+        .select("id, status")
+        .maybeSingle();
+
+if (taskError) {
+    message.innerText = "Task update failed: " + taskError.message;
+    console.error(taskError);
+    return;
+}
+
+if (!updatedTask) {
+    message.innerText =
+        "No task was updated. Check technician permissions (RLS).";
+    return;
+}
 
         if (taskError) {
     message.innerText =
