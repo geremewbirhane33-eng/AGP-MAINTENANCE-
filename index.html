@@ -67,89 +67,97 @@
 
     <hr>
 
-  <div id="taskSection">
-<h3>1. Technician Task Assignment</h3>
+  
+<div id="taskSection">
 
-    <label>Technician Name:</label><br>
-    <input type="text" id="technicianName">
-    <br><br>
+    <!-- SUPERVISOR TASK MANAGEMENT -->
+    <div id="supervisorTaskManagement">
 
-    <label>Task:</label><br>
-    <input type="text" id="task">
-    <br><br>
+        <h3>1. Technician Task Assignment</h3>
 
-    <label>Task Type:</label><br>
-    <select id="taskType">
-        <option value="">Select Task Type</option>
-        <option value="Corrective Maintenance">Corrective Maintenance</option>
-        <option value="Preventive Maintenance">Preventive Maintenance</option>
-        <option value="Inspection">Inspection</option>
-        <option value="Installation">Installation</option>
-        <option value="Emergency">Emergency</option>
-    </select>
-    <br><br>
+        <label>Technician Name:</label><br>
+        <input type="text" id="technicianName">
+        <br><br>
 
-    <label>Equipment:</label><br>
-    <input type="text" id="equipment">
-    <br><br>
+        <label>Task:</label><br>
+        <input type="text" id="task">
+        <br><br>
 
-    <label>Priority:</label><br>
-    <select id="priority">
-        <option value="">Select Priority</option>
-    <option value="Urgent">Urgent</option>
-<option value="High">High</option>
-<option value="Normal">Normal</option>
-<option value="Low">Low</option>    
-    </select>
-    <br><br>
+        <label>Task Type:</label><br>
+        <select id="taskType">
+            <option value="">Select Task Type</option>
+            <option value="Corrective Maintenance">Corrective Maintenance</option>
+            <option value="Preventive Maintenance">Preventive Maintenance</option>
+            <option value="Inspection">Inspection</option>
+            <option value="Installation">Installation</option>
+            <option value="Emergency">Emergency</option>
+        </select>
+        <br><br>
 
-    <label>Due Date:</label><br>
-    <input type="date" id="dueDate">
-    <br><br>
+        <label>Equipment:</label><br>
+        <input type="text" id="equipment">
+        <br><br>
 
-    <button onclick="saveTask()">Save Task</button>
+        <label>Priority:</label><br>
+        <select id="priority">
+            <option value="">Select Priority</option>
+            <option value="Urgent">Urgent</option>
+            <option value="High">High</option>
+            <option value="Normal">Normal</option>
+            <option value="Low">Low</option>
+        </select>
+        <br><br>
 
-    <hr>
+        <label>Due Date:</label><br>
+        <input type="date" id="dueDate">
+        <br><br>
 
-    <h3>Assigned Tasks</h3>
+        <button onclick="saveTask()">Save Task</button>
 
-    <div id="taskList">
-        No tasks entered yet.
+        <hr>
+
+        <h3>Assigned Tasks</h3>
+        <div id="taskList">No tasks entered yet.</div>
+
     </div>
 
-    <hr>
+    <!-- TECHNICIAN PROGRESS -->
+    <div id="technicianProgressSection">
 
-    <h3>Technician Task Progress</h3>
+        <hr>
+        <h3>Technician Task Progress</h3>
 
-    <label>Assigned Task:</label><br>
-    <select id="technicianTaskSelect">
-        <option value="">Select Your Assigned Task</option>
-    </select>
-    <br><br>
+        <label>Assigned Task:</label><br>
+        <select id="technicianTaskSelect">
+            <option value="">Select Your Assigned Task</option>
+        </select>
+        <br><br>
 
-    <label>Progress Status:</label><br>
-    <select id="technicianProgressStatus">
-        <option value="">Select Progress</option>
-        <option value="In Progress">In Progress</option>
-        <option value="Waiting Material">Waiting Material</option>
-        <option value="Completed">Completed</option>
-    </select>
-    <br><br>
+        <label>Progress Status:</label><br>
+        <select id="technicianProgressStatus">
+            <option value="">Select Progress</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Waiting Material">Waiting Material</option>
+            <option value="Completed">Completed</option>
+        </select>
+        <br><br>
 
-    <label>Work Report / Comment:</label><br>
-    <textarea id="technicianProgressComment"
-              rows="4"
-              placeholder="Describe work done or materials needed"></textarea>
-    <br><br>
+        <label>Work Report / Comment:</label><br>
+        <textarea id="technicianProgressComment"
+                  rows="4"
+                  placeholder="Describe work done or materials needed"></textarea>
+        <br><br>
 
-    <button onclick="saveTechnicianProgress()">
-        Submit Progress
-    </button>
+        <button onclick="saveTechnicianProgress()">
+            Submit Progress
+        </button>
 
-    <div id="technicianProgressMessage"></div>
+        <div id="technicianProgressMessage"></div>
 
-  <hr>
- </div>
+    </div>
+
+</div>
+
 <div id="managerSection"> 
 
 <h3>2. Manager Accepted Tasks</h3>
