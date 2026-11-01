@@ -485,14 +485,109 @@ async function saveNewPassword() {
         "Password updated successfully. Return to login and sign in.";
 }
 
+let currentUserRole = null;
+let currentUserProfile = null;
+
 async function showApp() {
+
+    const { data: userData, error: userError } =
+        await supabaseClient.auth.getUser();
+
+    if (userError || !userData.user) {
+        alert("Please log in again.");
+        return;
+    }
+
+    const { data: profile, error: profileError } =
+        await supabaseClient
+            .from("profiles")
+            .select("id, full_name, role, active")
+            .eq("id", userData.user.id)
+            .single();
+
+    if (profileError || !profile) {
+        alert("Could not load your user profile.");
+        console.error(profileError);
+        return;
+    }
+
+    if (profile.active !== true) {
+        alert("Your account is inactive. Contact the administrator.");
+        await supabaseClient.auth.signOut();
+        return;
+    }
+
+    currentUserRole = profile.role.toLowerCase();
+    currentUserProfile = profile;
+
+    console.log("Logged-in user:", profile.full_name);
+    console.log("User role:", currentUserRole);
+
     document.getElementById("loginSection").style.display = "none";
     document.getElementById("appSection").style.display = "block";
+
+    await applyRolePermissions();
 
     await loadTasks();
     await loadTechnicianTasks();
 }
+function applyRolePermissions() {
 
+    const sections = {
+        taskSection: ["supervisor", "admin"],
+        managerSection: ["manager", "admin"],
+        materialSection: ["supervisor", "store", "admin"],
+        pmSection: ["supervisor", "technician", "admin"],
+        reportSection: ["supervisor", "manager", "admin"]
+    };
+
+    // Control section visibility
+    Object.entries(sections).forEach(([id, roles]) => {
+        const section = document.getElementById(id);
+
+        if (section) {
+            section.style.display =
+                roles.includes(currentUserRole) ? "block" : "none";
+        }
+    });
+
+    // Control navigation buttons
+    document.querySelectorAll("nav button").forEach(button => {
+
+        const action = button.getAttribute("onclick") || "";
+
+        const match = action.match(/goToSection\('([^']+)'\)/);
+
+        if (match) {
+            const sectionId = match[1];
+            const allowedRoles = sections[sectionId] || [];
+
+            button.style.display =
+                allowedRoles.includes(currentUserRole)
+                    ? "inline-block"
+                    : "none";
+        }
+    });
+
+    // Hide password reset from non-supervisors and non-admins
+    const resetButton = document.querySelector(
+        "button[onclick='resetEngidaPassword()']"
+    );
+
+    if (resetButton) {
+        resetButton.style.display =
+            ["supervisor", "admin"].includes(currentUserRole)
+                ? "inline-block"
+                : "none";
+    }
+
+    // Hide technician progress from management users
+    const technicianProgress = document.getElementById(
+        "technicianTaskSelect"
+    )?.closest("h3")?.parentElement;
+
+    console.log("Role permissions applied:", currentUserRole);
+}
 
 async function initializeApp() {
     const params = new URLSearchParams(window.location.search);
