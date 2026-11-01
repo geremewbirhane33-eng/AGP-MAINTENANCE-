@@ -847,11 +847,13 @@ async function saveTechnicianProgress() {
             .eq("id", taskId);
 
         if (taskError) {
-            message.innerText =
-                "Task update failed: " + taskError.message;
-            console.error(taskError);
-            return;
-        }
+    message.innerText =
+        "Task update failed: " + taskError.message;
+    console.error("TASK UPDATE ERROR:", taskError);
+    return;
+}
+
+console.log("TASK UPDATE RESULT:", taskError);
 
         // Save technician's work report
         const { error: notesError } = await supabaseClient
