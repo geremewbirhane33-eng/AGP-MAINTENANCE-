@@ -1025,7 +1025,11 @@ console.log("TASK UPDATE RESULT:", taskError);
 
 
 async function managerApproveTask() {
-
+    // Only Manager and Admin can approve or reject tasks
+    if (!["manager", "admin"].includes(currentUserRole)) {
+        alert("Access denied. Only Manager or Admin can make task decisions.");
+        return;
+    }
     const taskId =
         document.getElementById("managerTask").value;
 
