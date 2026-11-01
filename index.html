@@ -813,9 +813,12 @@ const { data: techProfile, error: techError } =
             return;
         }
 
-        // 5. Success
-        alert(
-            "TASK ASSIGNED SUCCESSFULLY!\n\n" +
+  // Refresh the task list
+await loadTasks();
+
+// 5. Success
+alert(
+    "TASK ASSIGNED SUCCESSFULLY!\n\n" +
             "Task: " + taskData.title + "\n" +
             "Task Number: " + taskData.task_number + "\n" +
             "Technician: " + technician
