@@ -35,7 +35,12 @@
     <button onclick="goToSection('taskSection')">
         Tasks
     </button>
-
+<button onclick="goToSection('technicianProgressSection')">
+    My Tasks
+</button>
+<button onclick="goToSection('materialRequestSection')">
+    Request Material
+</button>
     <button onclick="goToSection('managerSection')">
         Manager
     </button>
@@ -117,9 +122,10 @@
         <hr>
 
         <h3>Assigned Tasks</h3>
-        <div id="taskList">No tasks entered yet.</div>
+             <div id="taskList">No tasks entered yet.</div>
 
     </div>
+</div>   
 
     <!-- TECHNICIAN PROGRESS -->
     <div id="technicianProgressSection">
@@ -152,8 +158,57 @@
             Submit Progress
         </button>
 
-        <div id="technicianProgressMessage"></div>
+                <div id="technicianProgressMessage"></div>
 
+    </div>
+
+<div id="materialRequestSection">
+<label>Select Assigned Task:</label><br>
+<select id="requestMaterialTask">
+    <option value="">Select Your Assigned Task</option>
+</select>
+<br><br>
+
+    <hr>
+    <h3>Request Maintenance Materials</h3>
+
+    <label>Material Name:</label><br>
+    <input type="text" id="requestMaterialName"
+           placeholder="Enter material name">
+    <br><br>
+
+    <label>Quantity:</label><br>
+    <input type="number" id="requestMaterialQuantity"
+           min="1" step="any">
+    <br><br>
+
+    <label>Unit:</label><br>
+    <select id="requestMaterialUnit">
+        <option value="">Select Unit</option>
+        <option value="pcs">pcs</option>
+        <option value="meter">meter</option>
+        <option value="kg">kg</option>
+        <option value="liter">liter</option>
+        <option value="set">set</option>
+        <option value="roll">roll</option>
+        <option value="box">box</option>
+    </select>
+    <br><br>
+
+    <label>Reason for Request:</label><br>
+    <textarea id="requestMaterialReason" rows="4"
+        placeholder="Explain why you need this material"></textarea>
+    <br><br>
+
+    <button onclick="submitMaterialRequest()">
+        Submit Material Request
+    </button>
+
+    <p id="materialRequestMessage"></p>
+
+    <h3>My Material Requests</h3>
+    <div id="myMaterialRequests">
+        No material requests yet.
     </div>
 
 </div>
@@ -541,19 +596,22 @@ async function showApp() {
 
     await applyRolePermissions();
 
-    await loadTasks();
-    await loadTechnicianTasks();
+  await loadTasks();
+await loadTechnicianTasks();
+await loadMyMaterialRequests();
 }
 
-function applyRolePermissions() {
 
-    const sections = {
-        taskSection: ["supervisor", "admin"],
-        managerSection: ["supervisor", "manager", "admin"],
-        materialSection: ["supervisor", "store", "admin"],
-        pmSection: ["supervisor", "technician", "admin"],
-        reportSection: ["supervisor", "manager", "admin"]
-    };
+function applyRolePermissions() {
+ const sections = {
+    taskSection: ["supervisor", "admin"],
+    technicianProgressSection: ["supervisor", "technician", "admin"],
+    materialRequestSection: ["technician", "supervisor", "admin"],
+    managerSection: ["supervisor", "manager", "admin"],
+    materialSection: ["supervisor", "store", "admin"],
+    pmSection: ["supervisor", "technician", "admin"],
+    reportSection: ["supervisor", "manager", "admin"]
+};  
 
     // Show or hide dashboard sections
     Object.entries(sections).forEach(([id, roles]) => {
@@ -608,6 +666,7 @@ function applyRolePermissions() {
             }
         });
     }
+
     const approvalForm =
         document.getElementById("managerApprovalForm");
 
@@ -617,8 +676,10 @@ function applyRolePermissions() {
                 ? "block"
                 : "none";
     }
+
     console.log("Role permissions applied:", currentUserRole);
 }
+
 
 
 async function initializeApp() {
@@ -834,69 +895,85 @@ alert(
 }
 
 async function loadTechnicianTasks() {
-    const dropdown = document.getElementById("technicianTaskSelect");
+const dropdown = document.getElementById("technicianTaskSelect");
 
-    if (!dropdown) return;
+if (!dropdown) return;  
 
-    dropdown.innerHTML =
-        '<option value="">Loading assigned tasks...</option>';
+dropdown.innerHTML =  
+    '<option value="">Loading assigned tasks...</option>';  
 
-    const { data: userData, error: userError } =
-        await supabaseClient.auth.getUser();
+const { data: userData, error: userError } =  
+    await supabaseClient.auth.getUser();  
 
-    if (userError || !userData.user) {
-        dropdown.innerHTML =
-            '<option value="">Please log in again</option>';
-        return;
-    }
+if (userError || !userData.user) {  
+    dropdown.innerHTML =  
+        '<option value="">Please log in again</option>';  
+    return;  
+}  
 
-    const { data, error } = await supabaseClient
-        .from("task_assignments")
-        .select(`
-            task_id,
-            technician_id,
-            tasks (
-                id,
-                task_number,
-                title,
-                status
-            )
-        `)
-        .eq("technician_id", userData.user.id);
+const { data, error } = await supabaseClient  
+    .from("task_assignments")  
+    .select(`  
+        task_id,  
+        technician_id,  
+        tasks (  
+            id,  
+            task_number,  
+            title,  
+            status  
+        )  
+    `)  
+    .eq("technician_id", userData.user.id);  
 
-    if (error) {
-        console.error("Loading technician tasks failed:", error);
-        dropdown.innerHTML =
-            '<option value="">Could not load tasks</option>';
+if (error) {  
+    console.error("Loading technician tasks failed:", error);  
+    dropdown.innerHTML =  
+        '<option value="">Could not load tasks</option>';  
 
-        document.getElementById("technicianProgressMessage")
-            .innerText = error.message;
-        return;
-    }
+    document.getElementById("technicianProgressMessage")  
+        .innerText = error.message;  
+    return;  
+}  
+dropdown.innerHTML =
+    '<option value="">Select Your Assigned Task</option>';
+   const requestTaskDropdown =
+    document.getElementById("requestMaterialTask");
 
-    dropdown.innerHTML =
+if (requestTaskDropdown) {
+    requestTaskDropdown.innerHTML =
         '<option value="">Select Your Assigned Task</option>';
-         console.log("Logged-in technician ID:", userData.user.id);
-    console.log("Assignments returned:", data);   
+} 
+     console.log("Logged-in technician ID:", userData.user.id);  
+console.log("Assignments returned:", data);     
 
-    if (!data || data.length === 0) {
-        dropdown.innerHTML =
-            '<option value="">No tasks assigned to this account</option>';
-        return;
-    }
+if (!data || data.length === 0) {  
+    dropdown.innerHTML =  
+        '<option value="">No tasks assigned to this account</option>';  
+    return;  
+}  
 
-    data.forEach(function (item) {
-        if (!item.tasks) return;
+data.forEach(function (item) {  
+    if (!item.tasks) return;  
 
-        const option = document.createElement("option");
-        option.value = item.tasks.id;
-        option.textContent =
-            (item.tasks.task_number || "Task " + item.tasks.id) +
-            " - " + (item.tasks.title || "") +
-            " (" + (item.tasks.status || "") + ")";
+    const option = document.createElement("option");  
+    option.value = item.tasks.id;  
+    option.textContent =  
+        (item.tasks.task_number || "Task " + item.tasks.id) +  
+        " - " + (item.tasks.title || "") +  
+        " (" + (item.tasks.status || "") + ")";  
 
-        dropdown.appendChild(option);
-    });
+    dropdown.appendChild(option);
+if (requestTaskDropdown) {
+    const requestOption = document.createElement("option");
+    requestOption.value = item.tasks.id;
+    requestOption.textContent =
+        (item.tasks.task_number || "Task " + item.tasks.id) +
+        " - " + (item.tasks.title || "");
+
+    requestTaskDropdown.appendChild(requestOption);
+}
+});
+
 }
 
 
@@ -1810,8 +1887,141 @@ async function resetEngidaPassword() {
     }
 }
 
+async function submitMaterialRequest() {
+
+    const taskId = document.getElementById(
+        "requestMaterialTask"
+    ).value;
+
+    const materialName = document.getElementById(
+        "requestMaterialName"
+    ).value.trim();
+
+    const quantity = Number(document.getElementById(
+        "requestMaterialQuantity"
+    ).value);
+
+    const unit = document.getElementById(
+        "requestMaterialUnit"
+    ).value;
+
+    const reason = document.getElementById(
+        "requestMaterialReason"
+    ).value.trim();
+
+    const message = document.getElementById(
+        "materialRequestMessage"
+    );
+
+    if (!taskId || !materialName || !quantity || quantity <= 0 || !unit) {
+        message.innerText =
+            "Please select a task and complete material details.";
+        return;
+    }
+
+    const { data: userData, error: userError } =
+        await supabaseClient.auth.getUser();
+
+    if (userError || !userData.user) {
+        message.innerText = "Please log in again.";
+        return;
+    }
+
+    const requestNumber = "MR-" + Date.now();
+
+    const { error } = await supabaseClient
+        .from("material_requests")
+        .insert({
+            request_number: requestNumber,
+            requested_by: userData.user.id,
+            task_id: Number(taskId),
+            material_name: materialName,
+            quantity: quantity,
+            unit: unit,
+            notes: reason,
+            status: "Pending"
+        });
+
+    if (error) {
+        message.innerText =
+            "Request failed: " + error.message;
+        console.error(error);
+        return;
+    }
+
+    message.innerText =
+        "Material request submitted successfully!";
+    await loadMyMaterialRequests();    
+
+    document.getElementById("requestMaterialTask").value = "";
+    document.getElementById("requestMaterialName").value = "";
+    document.getElementById("requestMaterialQuantity").value = "";
+    document.getElementById("requestMaterialUnit").value = "";
+    document.getElementById("requestMaterialReason").value = "";
+
+}
+
+async function loadMyMaterialRequests() {
+
+    const list = document.getElementById(
+        "myMaterialRequests"
+    );
+
+    if (!list) return;
+
+    list.textContent = "Loading your material requests...";
+
+    const { data: userData, error: userError } =
+        await supabaseClient.auth.getUser();
+
+    if (userError || !userData.user) {
+        list.textContent = "Please log in again.";
+        return;
+    }
+
+    const { data, error } = await supabaseClient
+        .from("material_requests")
+        .select("request_number, material_name, quantity, unit, status, requested_at, notes")
+        .eq("requested_by", userData.user.id)
+        .order("requested_at", { ascending: false });
+
+    if (error) {
+        list.textContent =
+            "Could not load requests: " + error.message;
+        console.error(error);
+        return;
+    }
+
+    list.innerHTML = "";
+
+    if (!data || data.length === 0) {
+        list.textContent = "No material requests yet.";
+        return;
+    }
+
+    data.forEach(function(item) {
+
+        const request = document.createElement("div");
+        request.style.border = "1px solid #ccc";
+        request.style.padding = "10px";
+        request.style.margin = "8px 0";
+
+        const details = document.createElement("p");
+
+        details.textContent =
+            "Request: " + (item.request_number || "") +
+            " | Material: " + (item.material_name || "") +
+            " | Quantity: " + item.quantity + " " +
+            (item.unit || "") +
+            " | Status: " + (item.status || "Pending") +
+            " | Reason: " + (item.notes || "");
+
+        request.appendChild(details);
+        list.appendChild(request);
+    });
+}
+
 </script>
 </div>
 </body>
 </html>
-
