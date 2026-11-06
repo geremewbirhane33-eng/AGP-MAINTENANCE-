@@ -200,9 +200,9 @@
         placeholder="Explain why you need this material"></textarea>
     <br><br>
 
-    <button onclick="submitMaterialRequest()">
-        Submit Material Request
-    </button>
+    <button type="button" onclick="submitMaterialRequest()">
+    Submit Material Request
+</button>
 
     <p id="materialRequestMessage"></p>
 
@@ -215,7 +215,15 @@
 
 
 <div id="managerSection">
+<hr>
 
+<h3>Manager – Technician Material Requests</h3>
+
+<div id="managerMaterialRequests">
+    Loading material requests...
+</div>
+
+<hr>
     <h3>2. Manager Accepted Tasks</h3>
 
     <!-- MANAGER APPROVAL FORM -->
@@ -599,6 +607,7 @@ async function showApp() {
   await loadTasks();
 await loadTechnicianTasks();
 await loadMyMaterialRequests();
+await loadManagerMaterialRequests();
 }
 
 
@@ -2020,7 +2029,55 @@ async function loadMyMaterialRequests() {
         list.appendChild(request);
     });
 }
+async function loadManagerMaterialRequests() {
 
+    const list = document.getElementById(
+        "managerMaterialRequests"
+    );
+
+    if (!list) return;
+
+    list.textContent = "Loading material requests...";
+
+    const { data, error } = await supabaseClient
+        .from("material_requests")
+        .select("*")
+        .eq("status", "Pending")
+        .order("requested_at", { ascending: false });
+
+    if (error) {
+        list.textContent =
+            "Could not load requests: " + error.message;
+        console.error(error);
+        return;
+    }
+
+    list.innerHTML = "";
+
+    if (!data || data.length === 0) {
+        list.textContent = "No pending material requests.";
+        return;
+    }
+
+    data.forEach(function(item) {
+
+        const card = document.createElement("div");
+        card.style.border = "1px solid #ccc";
+        card.style.padding = "10px";
+        card.style.margin = "10px 0";
+
+        card.textContent =
+            "Request: " + item.request_number +
+            " | Technician ID: " + item.requested_by +
+            " | Task ID: " + item.task_id +
+            " | Material: " + item.material_name +
+            " | Quantity: " + item.quantity + " " + item.unit +
+            " | Reason: " + (item.notes || "") +
+            " | Status: " + item.status;
+
+        list.appendChild(card);
+    });
+}
 </script>
 </div>
 </body>
