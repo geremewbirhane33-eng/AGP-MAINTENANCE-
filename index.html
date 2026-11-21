@@ -32,36 +32,57 @@
 
 <div id="appSection" style="display:none;">
 <nav>
+
     <button onclick="goToSection('taskSection')">
         Tasks
     </button>
-<button onclick="goToSection('technicianProgressSection')">
-    My Tasks
-</button>
-<button onclick="goToSection('materialRequestSection')">
-    Request Material
-</button>
+
+    <button onclick="goToSection('technicianProgressSection')">
+        My Tasks
+    </button>
+
+    <button onclick="goToSection('materialRequestSection')">
+        Request Material
+    </button>
+
     <button onclick="goToSection('managerSection')">
         Manager
+    </button>
+
+    <button onclick="goToSection('managerMaterialRequestsSection')">
+        Material Requests
     </button>
 
     <button onclick="goToSection('materialSection')">
         Materials
     </button>
 
-    <button onclick="goToSection('pmSection')">
-        Preventive Maintenance
-    </button>
-
-   
     <button onclick="goToSection('reportSection')">
         Weekly Report
     </button>
+<button onclick="openGeneralPM()">
+    Preventive Maintenance
+</button>
 
-    <button onclick="logoutUser()">Logout</button>
-   <button onclick="resetEngidaPassword()">
-    Reset Engida Password
-</button> 
+<button onclick="openGeneratorPM()">
+    Generator Inspection
+</button>
+<button onclick="goToSection('chickMasterSection')">
+    Chick Master Setter
+</button>
+
+<button onclick="goToSection('chickHatcherSection')">
+    Chick Master Hatcher
+</button>
+
+    <button onclick="logoutUser()">
+        Logout
+    </button>
+
+    <button onclick="resetEngidaPassword()">
+        Reset Engida Password
+    </button>
+
 </nav>
  
 
@@ -213,14 +234,14 @@
 
 </div>
 
-
 <div id="managerSection">
+
+<div id="managerMaterialRequestsSection">
 <hr>
-
-<h3>Manager – Technician Material Requests</h3>
-
-<div id="managerMaterialRequests">
-    Loading material requests...
+    <h3>Manager – Technician Material Requests</h3>
+    <div id="managerMaterialRequests">
+        Loading material requests...
+    </div>
 </div>
 
 <hr>
@@ -318,96 +339,334 @@
 
 </div>
 
+<!-- CHICK MASTER SETTER INSPECTION -->
+
+<div id="chickMasterSection" style="display:none;">
+
+    <hr>
+
+    <h2>CHICK MASTER SETTER</h2>
+    <h3>Preventive Maintenance Inspection</h3>
+
+    <label>Machine Number:</label><br>
+    <input type="text" id="chickMachineNo"
+           placeholder="Enter machine number">
+    <br><br>
+
+    <label>Inspection Frequency:</label><br>
+   <select id="chickFrequency" onchange="loadChickMasterChecklist()"> 
+        <option value="">Select Frequency</option>
+        <option value="Daily">Daily</option>
+        <option value="Weekly">Weekly</option>
+        <option value="Monthly">Monthly</option>
+        <option value="3 Months">3 Months</option>
+        <option value="6 Months">6 Months</option>
+    </select>
+    <br><br>
+
+    <label>Inspection Date:</label><br>
+    <input type="date" id="chickDate">
+    <br><br>
+
+    <label>Week Number:</label><br>
+    <input type="text" id="chickWeek"
+           placeholder="Enter week number">
+    <br><br>
+
+    <label>Checked By:</label><br>
+    <input type="text" id="chickCheckedBy">
+    <br><br>
+
+    <div id="chickChecklist">
+        Select inspection frequency to load checklist.
+    </div>
+<div id="chickHatcherSection" style="display:none;">
+    <br>
+
+    <label>Approved By:</label><br>
+    <input type="text" id="chickApprovedBy">
+    <br><br>
+
+    <button type="button"
+            onclick="saveChickInspection()">
+        Save Chick Master Inspection
+    </button>
+
+    <p id="chickMessage"></p>
+
+    <hr>
+
+    <h3>Chick Master Inspection History</h3>
+
+    <div id="chickInspectionHistory">
+        No inspection records loaded.
+    </div>
+
+</div>
+
+<!-- CHICK MASTER HATCHER INSPECTION -->
+
+<div id="chickHatcherSection" style="display:none;">
+
+    <hr>
+
+    <h2>AGP POULTRY PLC</h2>
+    <h3>CHICK MASTER HATCHER</h3>
+    <h3>PREVENTIVE MAINTENANCE INSPECTION</h3>
+
+    <label>Machine Number:</label><br>
+    <input type="text" id="hatcherMachineNo"
+           placeholder="Enter machine number">
+    <br><br>
+
+    <label>Inspection Frequency:</label><br>
+    <select id="hatcherFrequency"
+            onchange="loadChickHatcherChecklist()">
+        <option value="">Select Frequency</option>
+        <option value="Daily">Daily</option>
+        <option value="Weekly">Weekly</option>
+        <option value="Monthly">Monthly</option>
+        <option value="3 Months">3 Months</option>
+        <option value="6 Months">6 Months</option>
+    </select>
+    <br><br>
+
+    <label>Inspection Date:</label><br>
+    <input type="date" id="hatcherDate">
+    <br><br>
+
+    <label>Week Number:</label><br>
+    <input type="text" id="hatcherWeek"
+           placeholder="Enter week number">
+    <br><br>
+
+    <label>Checked By:</label><br>
+    <input type="text" id="hatcherCheckedBy">
+    <br><br>
+
+    <label>Checker Signature:</label><br>
+    <input type="text" id="hatcherCheckedSignature"
+           placeholder="Enter signature">
+    <br><br>
+
+    <hr>
+
+    <div id="hatcherChecklist">
+        Select inspection frequency to load checklist.
+    </div>
+
+    <hr>
+
+    <label>Approved By:</label><br>
+    <input type="text" id="hatcherApprovedBy">
+    <br><br>
+
+    <label>Approver Signature:</label><br>
+    <input type="text" id="hatcherApprovedSignature"
+           placeholder="Enter signature">
+    <br><br>
+
+    <button type="button"
+            onclick="saveChickHatcherInspection()">
+        Save Hatcher Inspection
+    </button>
+
+    <p id="hatcherMessage"></p>
+
+    <hr>
+
+    <h3>Chick Master Hatcher Inspection History</h3>
+
+    <div id="hatcherInspectionHistory">
+        No inspection records loaded.
+    </div>
+
+</div>
+
+
 <div id="pmSection">
-<h3>4. Preventive Maintenance</h3>
 
-<label>Equipment:</label><br>
-<input type="text" id="pmEquipment">
-<br><br>
+    <div id="generalPMSection">
 
-<label>Maintenance Activity:</label><br>
-<input type="text" id="pmActivity">
-<br><br>
+        <h3>4. General Preventive Maintenance</h3>
 
-<label>Frequency:</label><br>
-<select id="pmFrequency">
-    <option value="">Select Frequency</option>
-    <option value="Weekly">Weekly</option>
-    <option value="Monthly">Monthly</option>
-    <option value="3 Month">3 Month</option>
-    <option value="6 Month">6 Month</option>
-</select>
+        <label>Equipment:</label><br>
+        <input type="text" id="pmEquipment">
+        <br><br>
 
-<br><br>
+        <label>Maintenance Activity:</label><br>
+        <input type="text" id="pmActivity">
+        <br><br>
 
-<label>Responsible Technician:</label><br>
-<input type="text" id="pmTechnician">
-<br><br>
+        <label>Frequency:</label><br>
+        <select id="pmFrequency">
+            <option value="">Select Frequency</option>
+            <option value="Weekly">Weekly</option>
+            <option value="Monthly">Monthly</option>
+            <option value="3 Month">3 Month</option>
+            <option value="6 Month">6 Month</option>
+        </select>
+        <br><br>
 
-<label>Planned Date:</label><br>
-<input type="date" id="pmDate">
-<br><br>
+        <label>Responsible Technician:</label><br>
+        <input type="text" id="pmTechnician">
+        <br><br>
 
-<button onclick="savePM()">
-    Save Preventive Maintenance
-</button>
+        <label>Planned Date:</label><br>
+        <input type="date" id="pmDate">
+        <br><br>
 
-<hr>
+        <button onclick="savePM()">
+            Save Preventive Maintenance
+        </button>
 
-<h3>Preventive Maintenance Schedule</h3>
+        <hr>
 
-<div id="pmList">
-    No preventive maintenance entered yet.
+        <h3>Preventive Maintenance Schedule</h3>
+        <div id="pmList">
+            No preventive maintenance entered yet.
+        </div>
+
+        <hr>
+
+        <h3>Preventive Maintenance Status</h3>
+        <div id="pmStatusDashboard">
+            No preventive maintenance data.
+        </div>
+
+    </div>
+
+    <!-- GENERATOR INSPECTION PAGE -->
+
+    <div id="generatorPMSection" style="display:none;">
+
+        <h3>GENERATOR PREVENTIVE MAINTENANCE</h3>
+
+        <label>Generator Machine Number:</label><br>
+        <input type="text" id="genMachineNo">
+        <br><br>
+
+        <label>Inspection Frequency:</label><br>
+        <select id="genFrequency" onchange="loadGeneratorChecklist()">
+            <option value="">Select Frequency</option>
+            <option value="Daily">Daily</option>
+            <option value="Weekly">Weekly</option>
+            <option value="Monthly">Monthly</option>
+            <option value="3 Month">3 Month</option>
+            <option value="6 Month">6 Month</option>
+        </select>
+        <br><br>
+
+        <label>Inspection Date:</label><br>
+        <input type="date" id="genDate">
+        <br><br>
+
+        <label>Week Number:</label><br>
+        <input type="text" id="genWeek">
+        <br><br>
+
+        <label>Running Hours:</label><br>
+        <input type="number" id="genRunningHours" min="0" step="0.1">
+        <br><br>
+
+        <label>Checked By:</label><br>
+        <input type="text" id="genCheckedBy">
+        <br><br>
+
+        <div id="generatorChecklist">
+            Select inspection frequency to load checklist.
+        </div>
+
+        <br>
+
+        <label>Approved By:</label><br>
+        <input type="text" id="genApprovedBy">
+        <br><br>
+
+        <button type="button" onclick="saveGeneratorInspection()">
+            Save Generator Inspection
+        </button>
+
+        <p id="genMessage"></p>
+
+        <hr>
+
+        <h3>Generator Inspection History</h3>
+
+        <div id="generatorInspectionHistory">
+            No inspection records loaded.
+        </div>
+
+    </div>
+
 </div>
-<hr>
 
-<h3>5. Preventive Maintenance Status</h3>
 
-<div id="pmStatusDashboard">
-    No preventive maintenance data.
-</div>
-<hr>
-</div>
 
 <div id="reportSection">
-<h3>6. Weekly Report</h3>
 
-<label>Report Week:</label><br>
-<input type="week" id="reportWeek">
-<br><br>
+    <h3>6. Automatic Weekly Report</h3>
 
-<label>Prepared By:</label><br>
-<input type="text" id="reportPreparedBy">
-<br><br>
+    <label>Report Week:</label><br>
+    <input type="week" id="reportWeek">
+    <br><br>
 
-<label>Major Work Completed:</label><br>
-<textarea id="reportCompleted" rows="5" cols="30"></textarea>
-<br><br>
+    <label>Prepared By:</label><br>
+    <input type="text" id="reportPreparedBy">
+    <br><br>
 
-<label>Problems / Breakdowns:</label><br>
-<textarea id="reportProblems" rows="5" cols="30"></textarea>
-<br><br>
+    <button onclick="generateAutomaticWeeklyReport()">
+        Generate Weekly Report
+    </button>
 
-<label>Materials Used:</label><br>
-<textarea id="reportMaterials" rows="5" cols="30"></textarea>
-<br><br>
+    <hr>
 
-<label>Recommendations:</label><br>
-<textarea id="reportRecommendations" rows="5" cols="30"></textarea>
-<br><br>
+    <h3>Generated Report</h3>
 
-<button onclick="saveWeeklyReport()">
-    Save Weekly Report
-</button>
-
-<hr>
-
-<h3>Weekly Reports</h3>
-
-<div id="weeklyReportList">
-    No weekly report entered yet.
-</div>
+    <div id="automaticReportResult">
+        Select a week and press Generate Weekly Report.
     </div>
+
+    <br>
+
+    <button onclick="printAutomaticWeeklyReport()">
+        Print Weekly Report
+    </button>
+
+    <hr>
+
+    <h3>Save Weekly Report</h3>
+
+    <label>Major Work Completed:</label><br>
+    <textarea id="reportCompleted" rows="5" cols="30"></textarea>
+    <br><br>
+
+    <label>Problems / Breakdowns:</label><br>
+    <textarea id="reportProblems" rows="5" cols="30"></textarea>
+    <br><br>
+
+    <label>Materials Used:</label><br>
+    <textarea id="reportMaterials" rows="5" cols="30"></textarea>
+    <br><br>
+
+    <label>Recommendations:</label><br>
+    <textarea id="reportRecommendations" rows="5" cols="30"></textarea>
+    <br><br>
+
+    <button onclick="saveWeeklyReport()">
+        Save Weekly Report
+    </button>
+
+    <hr>
+
+    <h3>Weekly Reports History</h3>
+
+    <div id="weeklyReportList">
+        No weekly report entered yet.
+    </div>
+
+</div>
+
 <script>
 alert("JAVASCRIPT IS WORKING");
 const SUPABASE_URL = "https://xkqpjtjulreybikdzruu.supabase.co";
@@ -608,20 +867,38 @@ async function showApp() {
 await loadTechnicianTasks();
 await loadMyMaterialRequests();
 await loadManagerMaterialRequests();
+await loadGeneratorInspectionHistory();
 }
 
 
 function applyRolePermissions() {
- const sections = {
+const sections = {
     taskSection: ["supervisor", "admin"],
     technicianProgressSection: ["supervisor", "technician", "admin"],
     materialRequestSection: ["technician", "supervisor", "admin"],
+
     managerSection: ["supervisor", "manager", "admin"],
+
+    managerMaterialRequestsSection: ["manager", "admin"],
+
     materialSection: ["supervisor", "store", "admin"],
     pmSection: ["supervisor", "technician", "admin"],
-    reportSection: ["supervisor", "manager", "admin"]
-};  
+    reportSection: ["supervisor", "manager", "admin"],
+    chickMasterSection: [
+    "supervisor",
+    "technician",
+    "manager",
+    "admin"
+],
 
+chickHatcherSection: [
+    "supervisor",
+    "technician",
+    "manager",
+    "admin"
+],
+
+}; 
     // Show or hide dashboard sections
     Object.entries(sections).forEach(([id, roles]) => {
         const section = document.getElementById(id);
@@ -1653,175 +1930,495 @@ function showPMStatusDashboard() {
 let weeklyReports = [];
 
 
-function saveWeeklyReport() {
+async function saveWeeklyReport() {
 
-    const week =
-        document.getElementById("reportWeek").value;
+    const week = document.getElementById("reportWeek").value;
+    const preparedBy = document.getElementById("reportPreparedBy").value.trim();
+    const completed = document.getElementById("reportCompleted").value;
+    const problems = document.getElementById("reportProblems").value;
+    const materials = document.getElementById("reportMaterials").value;
+    const recommendations = document.getElementById("reportRecommendations").value;
 
-    const preparedBy =
-        document.getElementById("reportPreparedBy").value;
-
-    const completed =
-        document.getElementById("reportCompleted").value;
-
-    const problems =
-        document.getElementById("reportProblems").value;
-
-    const materials =
-        document.getElementById("reportMaterials").value;
-
-    const recommendations =
-        document.getElementById("reportRecommendations").value;
-
-
-    if (week === "" || preparedBy === "") {
-
+    if (!week || !preparedBy) {
         alert("Please enter Report Week and Prepared By.");
-
         return;
     }
 
+    // Convert selected week into Monday and Sunday dates
+    const parts = week.split("-W");
+    const year = Number(parts[0]);
+    const weekNumber = Number(parts[1]);
 
-    const report = {
+    const january4 = new Date(Date.UTC(year, 0, 4));
+    const monday = new Date(january4);
 
-        id: Date.now(),
+    monday.setUTCDate(
+        january4.getUTCDate() -
+        ((january4.getUTCDay() + 6) % 7) +
+        (weekNumber - 1) * 7
+    );
 
-        week: week,
+    const sunday = new Date(monday);
+    sunday.setUTCDate(monday.getUTCDate() + 6);
 
-        preparedBy: preparedBy,
+    const weekStart = monday.toISOString().split("T")[0];
+    const weekEnd = sunday.toISOString().split("T")[0];
 
-        completed: completed,
+    const { data: userData, error: userError } =
+        await supabaseClient.auth.getUser();
 
-        problems: problems,
+    if (userError || !userData.user) {
+        alert("Please login again.");
+        return;
+    }
 
-        materials: materials,
+    const { error } = await supabaseClient
+        .from("weekly_reports")
+        .insert([{
+            report_week: week,
+            week_start: weekStart,
+            week_end: weekEnd,
+            prepared_by: userData.user.id,
+            completed: completed,
+            problems: problems,
+            materials: materials,
+            recommendations: recommendations,
+            created_by: userData.user.id
+        }]);
 
-        recommendations: recommendations
-    };
+    if (error) {
+        alert("Could not save report: " + error.message);
+        return;
+    }
 
-
-    weeklyReports.push(report);
-
-    showWeeklyReports();
+    alert("Weekly report saved successfully!");
 
     clearWeeklyReport();
+    await showWeeklyReports();
 }
 
 
 function clearWeeklyReport() {
 
     document.getElementById("reportWeek").value = "";
-
     document.getElementById("reportPreparedBy").value = "";
-
     document.getElementById("reportCompleted").value = "";
-
     document.getElementById("reportProblems").value = "";
-
     document.getElementById("reportMaterials").value = "";
-
     document.getElementById("reportRecommendations").value = "";
 }
 
 
-function showWeeklyReports() {
 
-    const list =
-        document.getElementById("weeklyReportList");
+async function showWeeklyReports() {
 
+    const list = document.getElementById("weeklyReportList");
 
-    if (weeklyReports.length === 0) {
+    list.innerHTML = "Loading weekly reports...";
 
-        list.innerHTML =
-            "No weekly report entered yet.";
+    const { data: reports, error } = await supabaseClient
+        .from("weekly_reports")
+        .select("*")
+        .order("submitted_at", { ascending: false });
 
+    if (error) {
+        list.innerHTML = "Error loading reports: " + error.message;
         return;
     }
 
+    if (!reports || reports.length === 0) {
+        list.innerHTML = "No weekly report entered yet.";
+        return;
+    }
+
+    // Get user IDs
+    const userIds = [...new Set(
+        reports.map(report => report.prepared_by).filter(Boolean)
+    )];
+
+    // Get names from AGP profiles table
+    const { data: profiles, error: profileError } =
+        await supabaseClient
+            .from("profiles")
+            .select("id, full_name")
+            .in("id", userIds);
+
+    if (profileError) {
+        list.innerHTML = "Error loading staff names: " + profileError.message;
+        return;
+    }
 
     let html = "";
 
+    reports.forEach(function(report) {
 
-    weeklyReports.forEach(function(report) {
+        const profile = profiles.find(
+            p => p.id === report.prepared_by
+        );
+
+        const staffName = profile
+            ? profile.full_name
+            : "Unknown Staff";
 
         html += `
             <div>
+                <h4>Weekly Report: ${report.report_week}</h4>
 
-                <h4>
-                    Weekly Report:
-                    ${report.week}
-                </h4>
+                <p><b>Prepared By:</b> ${staffName}</p>
 
-                <p>
-                    <b>Prepared By:</b>
-                    ${report.preparedBy}
-                </p>
+                <p><b>Major Work Completed:</b><br>
+                ${report.completed || ""}</p>
 
-                <p>
-                    <b>Major Work Completed:</b><br>
-                    ${report.completed}
-                </p>
+                <p><b>Problems / Breakdowns:</b><br>
+                ${report.problems || ""}</p>
 
-                <p>
-                    <b>Problems / Breakdowns:</b><br>
-                    ${report.problems}
-                </p>
+                <p><b>Materials Used:</b><br>
+                ${report.materials || ""}</p>
 
-                <p>
-                    <b>Materials Used:</b><br>
-                    ${report.materials}
-                </p>
+                <p><b>Recommendations:</b><br>
+                ${report.recommendations || ""}</p>
 
-                <p>
-                    <b>Recommendations:</b><br>
-                    ${report.recommendations}
-                </p>
-
-                <button
-                    onclick="deleteWeeklyReport(${report.id})">
+                <button onclick="deleteWeeklyReport(${report.id})">
                     Delete Report
                 </button>
 
                 <hr>
-
             </div>
         `;
     });
 
-
     list.innerHTML = html;
 }
 
+// ======================================
+// AGP AUTOMATIC WEEKLY REPORT
+// ======================================
 
-function deleteWeeklyReport(id) {
+let generatedWeeklyReport = "";
 
-    weeklyReports =
-        weeklyReports.filter(function(report) {
+async function generateAutomaticWeeklyReport() {
 
-            return report.id !== id;
+    const week = document.getElementById("reportWeek").value;
+    const result = document.getElementById("automaticReportResult");
 
-        });
+    if (!week) {
+        alert("Please select a reporting week.");
+        return;
+    }
 
+    result.innerHTML = "Searching AGP maintenance records...";
 
-    showWeeklyReports();
+    const parts = week.split("-W");
+    const year = Number(parts[0]);
+    const weekNumber = Number(parts[1]);
+
+    const january4 = new Date(Date.UTC(year, 0, 4));
+    const monday = new Date(january4);
+
+    monday.setUTCDate(
+        january4.getUTCDate() -
+        ((january4.getUTCDay() + 6) % 7) +
+        (weekNumber - 1) * 7
+    );
+
+    const sunday = new Date(monday);
+    sunday.setUTCDate(monday.getUTCDate() + 7);
+
+    const startDate = monday.toISOString().split("T")[0];
+    const endDate = sunday.toISOString().split("T")[0];
+
+    try {
+
+        // 1. Load tasks
+        const { data: tasks, error: taskError } =
+            await supabaseClient
+                .from("tasks")
+                .select("*")
+                .gte("created_at", startDate)
+                .lt("created_at", endDate);
+
+        if (taskError) throw taskError;
+
+        // 2. Load maintenance activities
+        const { data: activities, error: activityError } =
+            await supabaseClient
+                .from("maintenance_activities")
+                .select("*")
+                .gte("work_date", startDate)
+                .lt("work_date", endDate);
+
+        if (activityError) throw activityError;
+
+        // 3. Load material requests
+        const { data: requests, error: requestError } =
+            await supabaseClient
+                .from("material_requests")
+                .select("*")
+                .gte("requested_at", startDate)
+                .lt("requested_at", endDate);
+
+        if (requestError) throw requestError;
+
+        // 4. Load breakdowns
+        const { data: breakdowns, error: breakdownError } =
+            await supabaseClient
+                .from("breakdowns")
+                .select("*")
+                .gte("reported_at", startDate)
+                .lt("reported_at", endDate);
+
+        if (breakdownError) throw breakdownError;
+
+        // 5. Load generator inspections
+        const { data: inspections, error: inspectionError } =
+            await supabaseClient
+                .from("generator_inspections")
+                .select("*")
+                .gte("inspection_date", startDate)
+                .lt("inspection_date", endDate);
+
+        if (inspectionError) throw inspectionError;
+
+        // Prepare task summary
+        const completedTasks = tasks.filter(
+            t => t.status && t.status.toLowerCase() === "completed"
+        );
+
+        const pendingTasks = tasks.filter(
+            t => !t.status || t.status.toLowerCase() !== "completed"
+        );
+
+        // Display report
+        generatedWeeklyReport = `
+            <h2>AGP POULTRY PLC</h2>
+            <h3>MAINTENANCE WEEKLY REPORT</h3>
+
+            <p><b>Reporting Week:</b> ${week}</p>
+            <p><b>Period:</b> ${startDate} to ${new Date(sunday.getTime() - 86400000).toISOString().split("T")[0]}</p>
+            <p><b>Prepared By:</b> ${document.getElementById("reportPreparedBy").value || "Not entered"}</p>
+
+            <hr>
+
+            <h3>1. TASK SUMMARY</h3>
+            <p>Total Tasks: ${tasks.length}</p>
+            <p>Completed Tasks: ${completedTasks.length}</p>
+            <p>Pending Tasks: ${pendingTasks.length}</p>
+
+            <h3>2. MAINTENANCE ACTIVITIES</h3>
+            <p>Total Activities: ${activities.length}</p>
+
+            ${activities.map(a => `
+                <p>
+                    <b>${a.activity_type || "Activity"}</b><br>
+                    Date: ${a.work_date || ""}<br>
+                    Description: ${a.activity_description || ""}<br>
+                    Findings: ${a.findings || ""}<br>
+                    Action Taken: ${a.action_taken || ""}<br>
+                    Parts Used: ${a.parts_used || ""}<br>
+                    Result: ${a.result || ""}
+                </p>
+            `).join("")}
+
+            <h3>3. MATERIAL REQUESTS</h3>
+            <p>Total Requests: ${requests.length}</p>
+
+            ${requests.map(r => `
+                <p>
+                    Material: ${r.material_name || ""}<br>
+                    Quantity: ${r.quantity || ""} ${r.unit || ""}<br>
+                    Status: ${r.status || ""}
+                </p>
+            `).join("")}
+
+            <h3>4. BREAKDOWNS AND REPAIRS</h3>
+            <p>Total Breakdowns: ${breakdowns.length}</p>
+
+            ${breakdowns.map(b => `
+                <p>
+                    Problem: ${b.problem_description || ""}<br>
+                    Priority: ${b.priority || ""}<br>
+                    Status: ${b.status || ""}<br>
+                    Root Cause: ${b.root_cause || ""}<br>
+                    Corrective Action: ${b.corrective_action || ""}<br>
+                    Downtime: ${b.downtime_hours || 0} hours
+                </p>
+            `).join("")}
+
+            <h3>5. GENERATOR INSPECTIONS</h3>
+            <p>Total Inspections: ${inspections.length}</p>
+
+       
+${inspections.map(g => {
+    const checklist = typeof g.checklist === "string"
+        ? JSON.parse(g.checklist)
+        : (g.checklist || {});
+
+    const items = Array.isArray(checklist.items)
+        ? checklist.items
+        : [];
+
+    return `
+        <div>
+            <h4>${g.machine_no || "Generator"}</h4>
+
+            <p>
+                Date: ${g.inspection_date || ""}<br>
+                Frequency: ${g.frequency || ""}<br>
+                Running Hours: ${g.running_hours || ""}<br>
+                Checked By: ${g.checked_by || ""}
+            </p>
+
+            <table border="1" cellpadding="6"
+                   cellspacing="0" width="100%">
+                <tr>
+                    <th>Checkpoint</th>
+                    <th>Status</th>
+                    <th>Action Taken</th>
+                </tr>
+
+                ${items.map(item => `
+                    <tr>
+                        <td>${item.checkpoint || ""}</td>
+                        <td>${item.status || ""}</td>
+                        <td>${item.action || ""}</td>
+                    </tr>
+                `).join("")}
+            </table>
+        </div>
+    `;
+}).join("")}
+   
+
+            <hr>
+            <h3>6. MANAGEMENT SUMMARY</h3>
+            <p>Completed tasks: ${completedTasks.length}</p>
+            <p>Pending tasks requiring follow-up: ${pendingTasks.length}</p>
+            <p>Maintenance activities: ${activities.length}</p>
+            <p>Breakdowns reported: ${breakdowns.length}</p>
+            <p>Material requests: ${requests.length}</p>
+
+            <p><b>Prepared for:</b> Maintenance Manager and Management</p>
+        `;
+
+        result.innerHTML = generatedWeeklyReport;
+
+    } catch (error) {
+
+        result.innerHTML =
+            "Error generating report: " + error.message;
+
+        console.error(error);
+    }
 }
+
+
+// ======================================
+// PRINT AUTOMATIC WEEKLY REPORT
+// ======================================
+
+function printAutomaticWeeklyReport() {
+
+    if (!generatedWeeklyReport) {
+        alert("Please generate the weekly report first.");
+        return;
+    }
+
+    const printWindow = window.open("", "_blank");
+
+    if (!printWindow) {
+        alert("Please allow pop-ups to print the report.");
+        return;
+    }
+
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>AGP Maintenance Weekly Report</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 25px;
+                }
+                h2, h3 {
+                    text-align: center;
+                }
+                p {
+                    line-height: 1.5;
+                }
+                @media print {
+                    body { margin: 15mm; }
+                }
+            </style>
+        </head>
+        <body>
+            ${generatedWeeklyReport}
+        </body>
+        </html>
+    `);
+
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+}
+
+async function deleteWeeklyReport(id) {
+
+    if (!confirm("Are you sure you want to delete this report?")) {
+        return;
+    }
+
+    const { error } = await supabaseClient
+        .from("weekly_reports")
+        .delete()
+        .eq("id", id);
+
+    if (error) {
+        alert("Delete failed: " + error.message);
+        return;
+    }
+
+    alert("Report deleted successfully.");
+
+    await showWeeklyReports();
+}
+
 
 async function goToSection(sectionId) {
 
     const section = document.getElementById(sectionId);
 
-    if (section) {
-        section.scrollIntoView({
-            behavior: "smooth"
-        });
+    if (!section) {
+        console.error("Section not found:", sectionId);
+        alert("Section not found: " + sectionId);
+        return;
     }
 
-    // Reload manager decisions when opening Manager section
+    section.style.display = "block";
+
+    section.scrollIntoView({
+        behavior: "smooth"
+    });
+
+    // Manager decisions
     if (
         sectionId.toLowerCase().includes("manager") ||
         sectionId.toLowerCase().includes("approval")
     ) {
         await showManagerDecisions();
+    }
+
+    // Chick Master Setter
+    if (sectionId === "chickMasterSection") {
+        await loadChickInspectionHistory();
+    }
+
+    // Chick Master Hatcher
+    if (sectionId === "chickHatcherSection") {
+        if (typeof loadChickHatcherInspectionHistory === "function") {
+            await loadChickHatcherInspectionHistory();
+        } else {
+            console.log("Hatcher history function not added yet.");
+        }
     }
 }
 
@@ -2078,6 +2675,1683 @@ async function loadManagerMaterialRequests() {
         list.appendChild(card);
     });
 }
+
+
+// GENERATOR PREVENTIVE MAINTENANCE CHECKLIST
+// ========================================
+
+const generatorChecklists = {
+    "Daily": [
+        "Check cleanliness of the generator",
+        "Check cleanliness of the generator room",
+        "Check fuel level and top up",
+        "Check oil level",
+        "Inspect battery charging condition and terminals",
+        "Check water and coolant level",
+        "Check the system is in Auto or Manual mode"
+    ],
+
+    "Weekly": [
+        "Clean air filter",
+        "Clean all outside parts and radiator",
+        "Check battery connection and water level",
+        "Check battery charging condition",
+        "Check and record running hours",
+        "Check oil, fuel and water leakage"
+    ],
+
+    "Monthly": [
+        "Check and correct all installation and door seals",
+        "Check rain cap and chimney",
+        "Check all belt tension",
+        "Run generator and observe sound, vibration and smoke with and without load"
+    ],
+
+    "3 Month": [
+        "Check running hours; service oil and filters when due",
+        "Check all sensor conditions",
+        "Check all pump conditions",
+        "Check all electrical connections",
+        "Check ATS and changeover switch"
+    ],
+
+    "6 Month": [
+        "Service or replace all filters and replace oil",
+        "Run and observe sound, vibration and smoke",
+        "Clean fuel tank and add fuel treatment",
+        "Clean radiator and replace coolant"
+    ]
+};
+
+
+// HTML safety helper
+function generatorEscape(value) {
+    return String(value ?? "").replace(/[&<>"']/g, function(c) {
+        return {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        }[c];
+    });
+}
+
+
+// Load checklist based on selected frequency
+function loadGeneratorChecklist() {
+
+    const frequency =
+        document.getElementById("genFrequency").value;
+
+    const container =
+        document.getElementById("generatorChecklist");
+
+    if (!frequency) {
+        container.innerHTML =
+            "Select inspection frequency to load checklist.";
+        return;
+    }
+
+    let html = "";
+
+    if (frequency === "Daily") {
+        html += `
+            <label><b>Inspection Day:</b></label><br>
+            <select id="genInspectionDay">
+                <option value="">Select Day</option>
+                <option>Monday</option>
+                <option>Tuesday</option>
+                <option>Wednesday</option>
+                <option>Thursday</option>
+                <option>Friday</option>
+                <option>Saturday</option>
+            </select>
+            <br><br>
+        `;
+    }
+
+    html += `
+        <h3>${generatorEscape(frequency)} Generator Checklist</h3>
+        <table border="1" width="100%"
+               style="border-collapse:collapse;">
+            <tr>
+                <th>No.</th>
+                <th>Inspection Check Point</th>
+                <th>Status</th>
+                <th>Action / Remarks</th>
+            </tr>
+    `;
+
+    generatorChecklists[frequency].forEach(function(item, index) {
+
+        html += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${generatorEscape(item)}</td>
+                <td>
+                    <select id="genStatus${index}">
+                        <option value="">Select</option>
+                        <option value="OK">OK</option>
+                        <option value="Not OK">Not OK</option>
+                        <option value="N/A">N/A</option>
+                    </select>
+                </td>
+                <td>
+                    <textarea id="genAction${index}"
+                        rows="2"
+                        style="width:95%;"
+                        placeholder="Enter action or remarks"></textarea>
+                </td>
+            </tr>
+        `;
+    });
+
+    html += "</table>";
+
+    container.innerHTML = html;
+}
+
+
+// Save generator inspection to Supabase
+async function saveGeneratorInspection() {
+
+    const message =
+        document.getElementById("genMessage");
+
+    const machineNo =
+        document.getElementById("genMachineNo").value.trim();
+
+    const frequency =
+        document.getElementById("genFrequency").value;
+
+    const inspectionDate =
+        document.getElementById("genDate").value;
+
+    const weekNo =
+        document.getElementById("genWeek").value.trim();
+
+    const runningHoursValue =
+        document.getElementById("genRunningHours").value;
+
+    const checkedBy =
+        document.getElementById("genCheckedBy").value.trim();
+
+    const approvedBy =
+        document.getElementById("genApprovedBy").value.trim();
+
+    const daySelect =
+        document.getElementById("genInspectionDay");
+
+    const inspectionDay =
+        daySelect ? daySelect.value : null;
+
+    if (!machineNo || !frequency || !inspectionDate || !checkedBy) {
+        message.innerText =
+            "Please enter Generator Number, Frequency, Date and Checked By.";
+        return;
+    }
+
+    if (frequency === "Daily" && !inspectionDay) {
+        message.innerText = "Please select inspection day.";
+        return;
+    }
+
+    const checklistItems = generatorChecklists[frequency];
+
+    if (!checklistItems) {
+        message.innerText = "Invalid inspection frequency.";
+        return;
+    }
+
+    const results = [];
+
+    for (let i = 0; i < checklistItems.length; i++) {
+
+        const status =
+            document.getElementById("genStatus" + i).value;
+
+        const action =
+            document.getElementById("genAction" + i).value.trim();
+
+        if (!status) {
+            message.innerText =
+                "Please select a status for checklist item " + (i + 1);
+            return;
+        }
+
+        if (status === "Not OK" && !action) {
+            message.innerText =
+                "Please describe the corrective action for item " + (i + 1);
+            return;
+        }
+
+        results.push({
+            number: i + 1,
+            checkpoint: checklistItems[i],
+            status: status,
+            action: action
+        });
+    }
+
+    const { data: userData, error: userError } =
+        await supabaseClient.auth.getUser();
+
+    if (userError || !userData.user) {
+        message.innerText = "Please login again.";
+        return;
+    }
+
+    message.innerText = "Saving generator inspection...";
+
+    const inspectionRecord = {
+        machine_no: machineNo,
+        frequency: frequency,
+        inspection_date: inspectionDate,
+        week_no: weekNo,
+        running_hours: runningHoursValue === ""
+            ? null
+            : Number(runningHoursValue),
+        checked_by: checkedBy,
+        approved_by: approvedBy,
+        checklist: {
+            day: inspectionDay,
+            items: results
+        },
+        created_by: userData.user.id
+    };
+
+    const { error } = await supabaseClient
+        .from("generator_inspections")
+        .insert(inspectionRecord);
+
+    if (error) {
+        message.innerText =
+            "SAVE ERROR: " + error.message;
+
+        console.error("Generator inspection error:", error);
+        return;
+    }
+
+    message.innerText =
+        "Generator inspection saved successfully!";
+
+    document.getElementById("genMachineNo").value = "";
+    document.getElementById("genFrequency").value = "";
+    document.getElementById("genDate").value = "";
+    document.getElementById("genWeek").value = "";
+    document.getElementById("genRunningHours").value = "";
+    document.getElementById("genCheckedBy").value = "";
+    document.getElementById("genApprovedBy").value = "";
+
+    document.getElementById("generatorChecklist").innerHTML =
+        "Select inspection frequency to load checklist.";
+
+    await loadGeneratorInspectionHistory();
+}
+
+
+// Load saved inspection history
+async function loadGeneratorInspectionHistory() {
+
+    const list =
+        document.getElementById("generatorInspectionHistory");
+
+    if (!list) return;
+
+    list.innerHTML = "Loading generator inspection history...";
+
+    const { data, error } = await supabaseClient
+        .from("generator_inspections")
+        .select("*")
+        .order("inspection_date", { ascending: false })
+        .limit(100);
+
+    if (error) {
+        list.innerText =
+            "Could not load inspection history: " + error.message;
+        console.error(error);
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        list.innerText = "No generator inspections saved yet.";
+        return;
+    }
+
+    let html = `
+        <table border="1" width="100%"
+               style="border-collapse:collapse;">
+            <tr>
+                <th>Generator</th>
+                <th>Frequency</th>
+                <th>Date</th>
+                <th>Running Hours</th>
+                <th>Checked By</th>
+                <th>Result</th>
+            </tr>
+    `;
+
+    data.forEach(function(record) {
+
+        const items = record.checklist?.items || [];
+
+        const failed = items.filter(
+            item => item.status === "Not OK"
+        ).length;
+
+        const result = failed > 0
+            ? failed + " Failed"
+            : "All OK / N/A";
+
+        html += `
+            <tr>
+                <td>${generatorEscape(record.machine_no)}</td>
+                <td>${generatorEscape(record.frequency)}
+                    ${record.checklist?.day
+                        ? " - " + generatorEscape(record.checklist.day)
+                        : ""}
+                </td>
+                <td>${generatorEscape(record.inspection_date)}</td>
+                <td>${generatorEscape(record.running_hours ?? "-")}</td>
+                <td>${generatorEscape(record.checked_by)}</td>
+                <td>${generatorEscape(result)}</td>
+            </tr>
+        `;
+
+        html += `
+            <tr>
+                <td colspan="6">
+                    <details>
+                        <summary>View inspection details</summary>
+                        <table border="1" width="100%"
+                               style="border-collapse:collapse;">
+                            <tr>
+                                <th>Check Point</th>
+                                <th>Status</th>
+                                <th>Action / Remarks</th>
+                            </tr>
+                            ${items.map(item => `
+                                <tr>
+                                    <td>${generatorEscape(item.checkpoint)}</td>
+                                    <td>${generatorEscape(item.status)}</td>
+                                    <td>${generatorEscape(item.action)}</td>
+                                </tr>
+                            `).join("")}
+                        </table>
+                        Approved By:
+                        ${generatorEscape(record.approved_by || "-")}
+                    </details>
+                </td>
+            </tr>
+        `;
+    });
+
+    html += "</table>";
+
+    list.innerHTML = html;
+}
+// ========================================
+// GENERATOR PAGE NAVIGATION
+// ========================================
+
+function openGeneralPM() {
+
+    document.getElementById("pmSection").style.display = "block";
+
+    document.getElementById("generalPMSection").style.display = "block";
+
+    document.getElementById("generatorPMSection").style.display = "none";
+
+    document.getElementById("pmSection").scrollIntoView({
+        behavior: "smooth"
+    });
+}
+
+
+function openGeneratorPM() {
+
+    document.getElementById("pmSection").style.display = "block";
+
+    document.getElementById("generalPMSection").style.display = "none";
+
+    document.getElementById("generatorPMSection").style.display = "block";
+
+    loadGeneratorInspectionHistory();
+
+    document.getElementById("pmSection").scrollIntoView({
+        behavior: "smooth"
+    });
+}
+
+const chickMasterItems = {
+
+    "Daily": `
+DOORS|Cleanliness
+DOORS|Seals condition
+DOORS|Hinges condition
+DOORS|Latches operation
+DOORS|Smooth opening & closing
+Ventilation dumper|Cleanliness
+Ventilation dumper|Proper operation
+PROBES|Probe cleanliness
+PROBES|Clips & wicks condition
+PROBES|Temperature reading within set range
+PROBES|Humidity reading within set range
+Humidity|Check water leaks
+Humidity|check spay nozzel
+Humidity|Check spay nozzel quality
+Fan|Abnormal motor noise
+Turning|Turning operation normal
+Alarm|Alarm functional (test)
+`,
+
+    "Weekly": `
+VENTILATION SYSTEM|Internal cleanliness of ventilation components
+VENTILATION SYSTEM|Damper actuator operation
+VENTILATION SYSTEM|Correct damper movement and positioning
+Fan & Airflow System|Clean fan blades and safety guards
+Fan & Airflow System|Fan motor bearings condition (noise / overheating)
+Fan & Airflow System|Correct rotation direction
+Electrical System|All Electrical Controllers functioning properly
+Electrical System|Power supply stable
+Electrical System|Control panel clean and dry
+Electrical System|Terminal connections tight (power & control)
+Electrical System|Indicator lamps and switches functional
+Electrical System|Earthing (grounding) verified
+Humidification System|Humidity filter clean
+Humidification System|Spray nozzles operating properly
+Humidification System|Humidifier sensor functioning
+Humidification System|solenoid valve Cleaness and oprating properly
+Cooling system|Chilled water circulation With normal Temp and pressure
+Cooling system|Cooling Solenoid operation
+Cooling system|Cooling filter clean and seals intact
+Cooling system|No water leakage in cooling lines
+Cooling system|Return piping clean
+Heating system|Heater connections secure
+Heating system|Probe condition intact
+Heating system|Over-temperature protection checked
+Heating system|SSR operation (Zone 1 & Zone 2)
+Turning system|Turning angle approx. 43° ± 2° both directions
+Turning system|Gear motor condition and lubrication
+Turning system|Automatic and horizontal operation normal
+Turning system|Bars clean and straight
+Turning system|Chain tension and lubrication
+Turning system|Micro-switch operation
+Turning system|Tray frame cams wear condition
+Turning system|Bushings wear condition
+`,
+
+    "Monthly": `
+Sensors & Controls|Check sensor wiring & connections tight
+Sensors & Controls|Verify temperature & humidity accuracy with calibrated reference
+Sensors & Controls|Inspect probe placement & cleanliness
+Sensors & Controls|Test alarms (High/Low Temp, Humidity, Power Fail)
+Heating System|Inspect heaters for damage or hotspots
+Heating System|Measure heater current draw
+Heating System|Clean heater surfaces
+Cabinet & Insulation|Inspect door gaskets (seal integrity)
+Cabinet & Insulation|Check panel joints for air leaks
+Cabinet & Insulation|Verify door latches alignment
+Cooling system|Check drain line (no flow when cooling OFF)
+Cooling system|Check solenoid valves operation (open/close)
+Cooling system|Inspect pipes & fittings for leaks
+Cooling system|Verify water flow rate
+Cooling system|Clean strainers/filters
+TURNING|Test limit switches
+TURNING|Check turning angle & synchronization
+TURNING|Inspect chain tension & lubrication
+TURNING|Inspect arms & turning bars
+TURNING|Verify motor & gearbox condition
+Electrical|Measure supply voltage
+Electrical|Ensure covers closed & sealed
+Electrical|Inspect terminals for tightness/burn marks
+Electrical|Check grounding/earthing
+Electrical|Check UPS condition
+Electrical|Inspect electrical panel cleanliness
+Humidity|Clean water filters
+Humidity|Inspect lines for leaks
+Humidity|Check solenoid Valve
+Humidity|Verify Humidifir pump and spray Nozzel Quality
+Air System|Clean inlet air damper
+Air System|Check outlet damper operation
+Air System|Inspect circulation fans and blades cleaness
+Air System|Check fan motor current
+Air System|Verify airflow uniformity
+`,
+
+    "3 Months": `
+FAN & AIR SYSTEM|Frame condition & cleanliness
+FAN & AIR SYSTEM|Blade balance & vibration
+FAN & AIR SYSTEM|Motor speed & current
+FAN & AIR SYSTEM|Bearing condition
+FAN & AIR SYSTEM|Mounting bolts tightness
+FAN & AIR SYSTEM|Airflow direction & uniformity
+HEATING SYSTEM|Heater condition & cleanliness
+HEATING SYSTEM|Current draw measurement
+HEATING SYSTEM|Wiring inspection
+HEATING SYSTEM|Safety cutout test
+HEATING SYSTEM|Water temperature & pressure
+COOLING & HUMIDITY SYSTEM|Valve operation
+COOLING & HUMIDITY SYSTEM|Solenoids condition
+COOLING & HUMIDITY SYSTEM|Strainers & filters clean
+COOLING & HUMIDITY SYSTEM|Coils clean and leak-free
+COOLING & HUMIDITY SYSTEM|Drain system functional
+STRUCTURE & SEALS|Panels, joints, sealants
+STRUCTURE & SEALS|Floor condition
+STRUCTURE & SEALS|Exhaust components
+STRUCTURE & SEALS|Air leakage inspection
+ELECTRICAL SYSTEM|Cabinet inspection
+ELECTRICAL SYSTEM|Terminal tightness
+ELECTRICAL SYSTEM|Contactors & relays
+ELECTRICAL SYSTEM|Grounding
+ELECTRICAL SYSTEM|Signs of moisture
+ELECTRICAL SYSTEM|Panel ventilation
+CONTROL & SAFETY|Sensor calibration
+CONTROL & SAFETY|Alarm testing
+CONTROL & SAFETY|Safety devices operation
+MECHANICAL HANDLING|Setter trolley condition
+MECHANICAL HANDLING|Tracks & wheels
+MECHANICAL HANDLING|Alignment
+`,
+
+    "6 Months": `
+Temperature Control System|Check temperature uniformity across chamber
+Temperature Control System|Inspect heaters for proper operation
+Temperature Control System|Verify over-temperature protection
+Temperature Control System|Inspect sensor wiring and mounting
+Temperature Control System|Test temperature alarms
+Humidity System|Clean water lines and spray nozzles
+Humidity System|Remove scale, algae, biofilm
+Humidity System|Inspect solenoid valves and pumps
+Humidity System|Verify humidity alarms
+Ventilation System|Clean air inlet and outlet lines
+Ventilation System|Check airflow uniformity across trays
+Ventilation System|Clean or replace filters (if installed)
+Fans Motor|Check vibration and abnormal noise
+Fans Motor|Inspect fan blade balance
+Fans Motor|Lubricate bearings (if applicable)
+Fans Motor|Replace worn bearings or fans
+Fans Motor|Check fan motor current draw
+Egg Turning System|Inspect turning motor and gearbox
+Egg Turning System|Check chains tension
+Egg Turning System|Lubricate moving parts
+Egg Turning System|Verify turning angle and cycle timing
+Egg Turning System|Inspect limit switches and sensors
+Mechanical Components|Full lubrication of moving parts
+Mechanical Components|Inspect shafts, couplings, and alignment
+Mechanical Components|Inspect structural frame
+Mechanical Components|Tighten loose bolts and fasteners
+Mechanical Components|Check insulation panels condition
+Door & Sealing System|Inspect door gaskets for wear or leaks
+Door & Sealing System|Replace weak or damaged seals
+Door & Sealing System|Check door alignment
+Electrical System|Measure motor current (load check)
+Electrical System|Inspect power cables for aging or damage
+Electrical System|Tighten terminals in control panel
+Electrical System|Inspect contactors and relays
+Electrical System|Check grounding/earthing
+Electrical System|Inspect panel cooling fans and filters
+Electrical System|Perform insulation resistance test (if required)
+Safety Systems|Test emergency stop buttons
+Safety Systems|Inspect safety interlocks
+Safety Systems|Check over-temperature cutoff devices
+`
+};
+
+function loadChickMasterChecklist() {
+
+    const frequency =
+        document.getElementById("chickFrequency").value;
+
+    const container =
+        document.getElementById("chickChecklist");
+
+    if (!frequency) {
+        container.innerHTML =
+            "Select inspection frequency to load checklist.";
+        return;
+    }
+
+    const items = chickMasterItems[frequency]
+        .trim()
+        .split("\n")
+        .filter(line => line.trim() !== "");
+
+    let html = `
+        <h3>${frequency} Inspection Checklist</h3>
+
+        <table border="1" cellpadding="6"
+               style="width:100%;border-collapse:collapse;">
+
+            <tr>
+                <th>No.</th>
+                <th>Section</th>
+                <th>Inspection Check Point</th>
+                <th>Status</th>
+                <th>Action Performed</th>
+            </tr>
+    `;
+
+    items.forEach((line, index) => {
+
+        const parts = line.split("|");
+
+        const category = parts[0];
+        const checkpoint = parts[1];
+
+        html += `
+            <tr>
+                <td>${index + 1}</td>
+                <td>${category}</td>
+                <td>${checkpoint}</td>
+
+                <td>
+                    <select class="chickStatus">
+                        <option value="">Select</option>
+                        <option value="OK">OK</option>
+                        <option value="Not OK">Not OK</option>
+                        <option value="N/A">N/A</option>
+                    </select>
+                </td>
+
+                <td>
+                    <input type="text"
+                           class="chickAction"
+                           placeholder="Action performed"
+                           style="width:140px;">
+                </td>
+            </tr>
+        `;
+    });
+
+    html += `</table>`;
+
+    container.innerHTML = html;
+}
+
+
+async function saveChickInspection() {
+
+    const message = document.getElementById("chickMessage");
+
+    const machineNo =
+        document.getElementById("chickMachineNo").value.trim();
+
+    const frequency =
+        document.getElementById("chickFrequency").value;
+
+    const inspectionDate =
+        document.getElementById("chickDate").value;
+
+    const weekNo =
+        document.getElementById("chickWeek").value.trim();
+
+    const checkedBy =
+        document.getElementById("chickCheckedBy").value.trim();
+
+    // Required information
+    if (!machineNo || !frequency || !inspectionDate || !checkedBy) {
+        message.innerHTML =
+            "Please enter Machine Number, Frequency, Date and Checked By.";
+        return;
+    }
+
+    // Get logged-in user
+    const { data: authData, error: authError } =
+        await supabaseClient.auth.getUser();
+
+    if (authError || !authData.user) {
+        message.innerHTML = "Please login again.";
+        return;
+    }
+
+    // Collect checklist results
+    const rows = document.querySelectorAll(
+        "#chickChecklist table tr"
+    );
+
+    const checklistItems = [];
+
+    for (let i = 1; i < rows.length; i++) {
+
+        const cells = rows[i].querySelectorAll("td");
+
+        if (cells.length < 5) continue;
+
+        const status = cells[3]
+            .querySelector("select").value;
+
+        const action = cells[4]
+            .querySelector("input").value.trim();
+
+        if (!status) {
+            message.innerHTML =
+                "Please select a status for checklist item " + i;
+            return;
+        }
+
+        checklistItems.push({
+            no: i,
+            section: cells[1].innerText,
+            checkpoint: cells[2].innerText,
+            status: status,
+            action: action
+        });
+    }
+
+    if (checklistItems.length === 0) {
+        message.innerHTML = "Please load the checklist first.";
+        return;
+    }
+
+    message.innerHTML = "Saving inspection...";
+
+    // Save as pending manager approval
+    const { error } = await supabaseClient
+        .from("chick_master_inspections")
+        .insert([{
+            machine_no: machineNo,
+            frequency: frequency,
+            inspection_date: inspectionDate,
+            week_no: weekNo || null,
+            checked_by: checkedBy,
+            approved_by: null,
+            checked_signature: null,
+            approved_signature: null,
+            checklist: {
+                items: checklistItems
+            },
+            created_by: authData.user.id
+        }]);
+
+    if (error) {
+        console.error("Chick Master save error:", error);
+        message.innerHTML = "Save failed: " + error.message;
+        return;
+    }
+
+    message.innerHTML =
+        "Inspection submitted successfully. Waiting for manager approval.";
+
+    await loadChickInspectionHistory();
+}
+
+async function loadChickInspectionHistory() {
+
+    const history = document.getElementById(
+        "chickInspectionHistory"
+    );
+
+    if (!history) {
+        console.error("chickInspectionHistory section not found.");
+        return;
+    }
+
+    history.innerHTML = "Loading inspection history...";
+
+    const { data, error } = await supabaseClient
+        .from("chick_master_inspections")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        console.error("History loading error:", error);
+        history.innerHTML = "Error loading history: " + error.message;
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        history.innerHTML = "No inspection records found.";
+        return;
+    }
+
+    let html = `
+        <h3>CHICK MASTER INSPECTION HISTORY</h3>
+
+        <table border="1" cellpadding="6"
+        style="width:100%;border-collapse:collapse;">
+
+        <tr>
+            <th>ID</th>
+            <th>Machine</th>
+            <th>Frequency</th>
+            <th>Date</th>
+            <th>Checked By</th>
+            <th>Approved By</th>
+            <th>Action</th>
+        </tr>
+    `;
+
+    data.forEach(record => {
+
+        html += `
+            <tr>
+                <td>${record.id}</td>
+                <td>${record.machine_no}</td>
+                <td>${record.frequency}</td>
+                <td>${record.inspection_date}</td>
+                <td>${record.checked_by}</td>
+                <td>${record.approved_by || "Pending"}</td>
+
+                <td>
+                    <button type="button"
+                    onclick="viewChickInspection(${record.id})">
+                        View
+                    </button>
+
+                    <button type="button"
+                    onclick="viewChickInspection(${record.id})">
+                        Print
+                    </button>
+                </td>
+            </tr>
+        `;
+    });
+
+    html += "</table>";
+
+    history.innerHTML = html;
+}
+
+async function viewChickInspection(id) {
+
+    // 1. Load inspection from Supabase
+    const { data, error } = await supabaseClient
+        .from("chick_master_inspections")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+    if (error) {
+        alert("Could not load inspection: " + error.message);
+        return;
+    }
+
+    // 2. Get checklist items
+    const items = data.checklist?.items || [];
+
+    if (!items.length) {
+        alert("No checklist items found in this inspection.");
+        return;
+    }
+
+    // 3. Protect text displayed in the report
+    const safe = value => String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+
+    // 4. Prepare checklist table rows
+    const checklistRows = items.map(item => `
+        <tr>
+            <td>${safe(item.no)}</td>
+            <td>${safe(item.section)}</td>
+            <td>${safe(item.checkpoint)}</td>
+            <td>${safe(item.status)}</td>
+            <td>${safe(item.action || "-")}</td>
+        </tr>
+    `).join("");
+
+    // 5. Open printable report
+    const printWindow = window.open("", "_blank");
+
+    if (!printWindow) {
+        alert("Please allow pop-ups to print the report.");
+        return;
+    }
+
+    // 6. Create report
+    printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Chick Master Inspection Report</title>
+
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 25px;
+                color: black;
+            }
+
+            h2, h3 {
+                text-align: center;
+                margin: 6px;
+            }
+
+            .details {
+                margin-top: 25px;
+                margin-bottom: 20px;
+                line-height: 2;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 12px;
+            }
+
+            th, td {
+                border: 1px solid black;
+                padding: 7px;
+                text-align: left;
+            }
+
+            th {
+                background: #eeeeee;
+            }
+
+            .signatures {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 70px;
+            }
+
+            .signatures div {
+                width: 40%;
+            }
+
+            @media print {
+                body {
+                    margin: 10mm;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <h2>AGP POULTRY PLC</h2>
+        <h3>CHICK MASTER SETTER</h3>
+        <h3>PREVENTIVE MAINTENANCE INSPECTION REPORT</h3>
+
+        <hr>
+
+        <div class="details">
+            <strong>Machine Number:</strong>
+            ${safe(data.machine_no)}<br>
+
+            <strong>Inspection Frequency:</strong>
+            ${safe(data.frequency)}<br>
+
+            <strong>Inspection Date:</strong>
+            ${safe(data.inspection_date)}<br>
+
+            <strong>Week Number:</strong>
+            ${safe(data.week_no || "-")}<br>
+
+            <strong>Checked By:</strong>
+            ${safe(data.checked_by)}<br>
+
+            <strong>Approved By:</strong>
+            ${safe(data.approved_by || "Pending")}
+        </div>
+
+        <h3>INSPECTION CHECKLIST</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Section</th>
+                    <th>Inspection Check Point</th>
+                    <th>Status</th>
+                    <th>Action Performed</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                ${checklistRows}
+            </tbody>
+        </table>
+
+        <div class="signatures">
+            <div>
+                Checked By: ______________________
+                <br><br>
+                Signature: ________________________
+            </div>
+
+            <div>
+                Approved By: _____________________
+                <br><br>
+                Signature: ________________________
+            </div>
+        </div>
+
+    </body>
+    </html>
+    `);
+
+    printWindow.document.close();
+
+    // 7. Print report
+    printWindow.onload = function () {
+        printWindow.print();
+    };
+}
+
+
+function loadChickHatcherChecklist() {
+
+    const frequency =
+        document.getElementById("hatcherFrequency").value;
+
+    const container =
+        document.getElementById("hatcherChecklist");
+
+    if (!frequency) {
+        container.innerHTML = "Select inspection frequency.";
+        return;
+    }
+
+    const checklists = {
+
+        "Daily": {
+            periods: [
+                "Monday", "Tuesday", "Wednesday",
+                "Thursday", "Friday", "Saturday"
+            ],
+            groups: [
+                {
+                    name: "1. DOORS",
+                    items: [
+                        "CLEANLINESS",
+                        "SEALS and Hinges",
+                        "Opening and Closing"
+                    ]
+                },
+                {
+                    name: "2. Ventilation Damper",
+                    items: [
+                        "CLEANLINESS",
+                        "Auto OPERATION"
+                    ]
+                },
+                {
+                    name: "3. PROBES",
+                    items: [
+                        "CLEANLINESS",
+                        "CLIPS and Wicks"
+                    ]
+                },
+                {
+                    name: "4. Parameters",
+                    items: [
+                        "Temperature reading",
+                        "Humidity reading",
+                        "Alarm"
+                    ]
+                },
+                {
+                    name: "5. Fan",
+                    items: [
+                        "Air circulation",
+                        "Abnormal motor sound"
+                    ]
+                }
+            ]
+        },
+
+        "Weekly": {
+            periods: [
+                "Week 1", "Week 2", "Week 3", "Week 4"
+            ],
+            groups: [
+                {
+                    name: "1. VENTILATION SYSTEM",
+                    items: [
+                        "Check for correct functioning of Damper",
+                        "Check damper actuator operation"
+                    ]
+                },
+                {
+                    name: "2. Fan & Airflow System",
+                    items: [
+                        "Clean circulation fan blades and guards",
+                        "Check fan motor bearings (noise / heat)",
+                        "Verify correct fan rotation direction"
+                    ]
+                },
+                {
+                    name: "3. Electrical System",
+                    items: [
+                        "Inspect control panel for dust and moisture",
+                        "Check terminal tightness (power & control)",
+                        "Check indicator lamps and switches",
+                        "Verify earthing (ground) connection"
+                    ]
+                },
+                {
+                    name: "4. Humidification and Cooling System",
+                    items: [
+                        "Clean humidifier nozzles / pads",
+                        "Check both solenoid valve operation",
+                        "Inspect Both water filter / strainer and clean"
+                    ]
+                }
+            ]
+        },
+
+        "Monthly": {
+            periods: ["Inspection"],
+            groups: [
+                {
+                    name: "1. Sensors & Controls",
+                    items: [
+                        "Calibrate temperature sensors using CM kit",
+                        "Calibrate humidity sensors using CM kit",
+                        "Check CO₂ sensor (if equipped)",
+                        "Verify controller accuracy with reference device",
+                        "Test alarm functions (high/low temp, power fail)"
+                    ]
+                },
+                {
+                    name: "2. Fan & Airflow System",
+                    items: [
+                        "Clean circulation fan blades and guards",
+                        "Check fan motor bearings (noise / heat)",
+                        "Check capacitor and clean junction box"
+                    ]
+                },
+                {
+                    name: "3. Heating System",
+                    items: [
+                        "Inspect heaters",
+                        "Check heater contactors and safety cut-outs",
+                        "Clean heater surfaces"
+                    ]
+                },
+                {
+                    name: "4. Cabinet & Insulation",
+                    items: [
+                        "Inspect door gaskets for cracks or hardening",
+                        "Check cabinet panels for air leakage",
+                        "Inspect insulation condition"
+                    ]
+                },
+                {
+                    name: "5. Humidty Cooling system",
+                    items: [
+                        "Verify cooling solenoid stack open or closed",
+                        "Clean both water filters",
+                        "Clean all water circulation pipes"
+                    ]
+                },
+                {
+                    name: "6. Other Maintenance",
+                    items: [
+                        "Lubricate Tray Castors"
+                    ]
+                }
+            ]
+        },
+
+        "3 Months": {
+            periods: ["Inspection"],
+            groups: [
+                {
+                    name: "1. FAN System",
+                    items: [
+                        "CLEANLINESS",
+                        "Fan direction and air cerculation",
+                        "FAN BLADES BALANCE AND VIBRATION",
+                        "Verify Fan motor speed (1350 RPM)",
+                        "Inspect cleanes and proper opration of Heaters"
+                    ]
+                },
+                {
+                    name: "2. WATER CIRCULATION System",
+                    items: [
+                        "Verify inlet Cooling water temperature 12°C – 15°C",
+                        "Check Cooling water pressure (40 – 80 psi)",
+                        "Check Humidity water pressure (60 psi)",
+                        "Check for leaks and damage water line and solenaid valve",
+                        "clean all strianers change if nessery"
+                    ]
+                },
+                {
+                    name: "3. Electrical System",
+                    items: [
+                        "Check and tighten all terminals inside control cabinet",
+                        "Visually inspect In put power for damage or loose connections",
+                        "Check for signs of water in the control cabinet. Repair door gasket if required."
+                    ]
+                },
+                {
+                    name: "4. EXTERNAL",
+                    items: [
+                        "Check integrity of silicone seals in hatcher joints.",
+                        "FLOOR GROUTING",
+                        "cleane exhaust flange and check the opration",
+                        "Check hatcher baskets for damage and replace if necessary."
+                    ]
+                }
+            ]
+        },
+
+        "6 Months": {
+            periods: ["Inspection"],
+            groups: [
+                {
+                    name: "1. SIX MONTHS MAINTENANCE",
+                    items: [
+                        "Clean all inlet and outlet cooling pipe lines to remove scale, dirt, or blockage",
+                        "Perform full lubrication of all moving parts (fan bearings, shafts, hinges, mechanisms)",
+                        "Inspect and align all motors with connected components",
+                        "Measure motor current (ampere) and compare with rated value",
+                        "Inspect for aging, insulation damage, overheating marks",
+                        "Test safety interlocks and emergency stop switches",
+                        "Replace door gaskets if sealing is weak or damaged",
+                        "Perform deep cleaning of air ducts and ventilation passages",
+                        "Inspect and replace worn fan blades or bearings if necessary",
+                        "Perform full system calibration and validation (temperature, humidity, sensors)"
+                    ]
+                }
+            ]
+        }
+    };
+
+    const selected = checklists[frequency];
+
+    let html = `
+        <h3>CHICK MASTER HATCHER - ${frequency.toUpperCase()}</h3>
+    `;
+
+    let itemIndex = 0;
+
+    selected.groups.forEach(group => {
+
+        html += `<h3>${group.name}</h3>`;
+
+        group.items.forEach(item => {
+
+            html += `
+                <div style="
+                    border:1px solid #999;
+                    padding:12px;
+                    margin-bottom:12px;
+                    border-radius:6px;
+                ">
+
+                <strong>${itemIndex + 1}. ${item}</strong>
+            `;
+
+            selected.periods.forEach((period, periodIndex) => {
+
+                html += `
+                    <hr>
+
+                    <strong>${period}</strong><br><br>
+
+                    <label>Status:</label><br>
+
+                    <select id="hatcherStatus_${itemIndex}_${periodIndex}">
+                        <option value="">Select Status</option>
+                        <option value="OK">OK</option>
+                        <option value="Not OK">Not OK</option>
+                        <option value="N/A">N/A</option>
+                    </select>
+
+                    <br><br>
+
+                    <label>Action performed:</label><br>
+
+                    <textarea
+                        id="hatcherAction_${itemIndex}_${periodIndex}"
+                        rows="2"
+                        style="width:95%;"
+                        placeholder="Enter action performed">
+                    </textarea>
+                `;
+            });
+
+            html += `</div>`;
+
+            itemIndex++;
+        });
+    });
+
+    container.innerHTML = html;
+}
+
+async function saveChickHatcherInspection() {
+
+    const message = document.getElementById("hatcherMessage");
+
+    const machineNo =
+        document.getElementById("hatcherMachineNo").value.trim();
+
+    const frequency =
+        document.getElementById("hatcherFrequency").value;
+
+    const inspectionDate =
+        document.getElementById("hatcherDate").value;
+
+    const weekNo =
+        document.getElementById("hatcherWeek").value.trim();
+
+    const checkedBy =
+        document.getElementById("hatcherCheckedBy").value.trim();
+
+    const approvedBy =
+        document.getElementById("hatcherApprovedBy").value.trim();
+
+    const checkedSignature =
+        document.getElementById("hatcherCheckedSignature").value.trim();
+
+    const approvedSignature =
+        document.getElementById("hatcherApprovedSignature").value.trim();
+
+    if (!machineNo || !frequency || !inspectionDate || !checkedBy) {
+        message.innerHTML = "Please complete all required fields.";
+        return;
+    }
+
+    const checklist = [];
+
+    // Collect inspection results
+    const selects = document.querySelectorAll(
+        "#hatcherChecklist select[id^='hatcherStatus_']"
+    );
+
+    for (const select of selects) {
+
+        const parts = select.id.split("_");
+        const itemIndex = parts[1];
+        const periodIndex = parts[2];
+
+        const actionField = document.getElementById(
+            `hatcherAction_${itemIndex}_${periodIndex}`
+        );
+
+        if (!select.value) {
+            message.innerHTML = "Please select status for every inspection point.";
+            select.focus();
+            return;
+        }
+
+        checklist.push({
+            item_index: Number(itemIndex),
+            period_index: Number(periodIndex),
+            status: select.value,
+            action: actionField ? actionField.value.trim() : ""
+        });
+    }
+
+    if (checklist.length === 0) {
+        message.innerHTML = "Please load the inspection checklist first.";
+        return;
+    }
+
+    message.innerHTML = "Saving inspection...";
+
+    const { data: userData, error: userError } =
+        await supabaseClient.auth.getUser();
+
+    if (userError || !userData.user) {
+        message.innerHTML = "Please log in again.";
+        return;
+    }
+
+    
+const inspectionData = {
+    machine_no: machineNo,
+    frequency: frequency,
+    inspection_date: inspectionDate,
+    week_no: weekNo || null,
+    checked_by: checkedBy,
+    approved_by: approvedBy || null,
+    checked_signature: checkedSignature || null,
+    approved_signature: approvedSignature || null,
+    checklist: checklist
+};
+
+let error;
+
+if (editingHatcherInspectionId !== null) {
+
+    const result = await supabaseClient
+        .from("chick_master_hatcher_inspections")
+        .update(inspectionData)
+        .eq("id", editingHatcherInspectionId);
+
+    error = result.error;
+
+} else {
+
+   const result = await supabaseClient
+    .from("chick_master_hatcher_inspections")
+    .insert([{
+        ...inspectionData,
+        created_by: userData.user.id
+    }])
+    .select()
+    .single();
+
+error = result.error;
+
+if (!error) {
+    console.log("HATCHER RECORD INSERTED:", result.data);
+    message.innerHTML =
+        "Hatcher inspection saved! Record ID: " + result.data.id;
+} 
+}
+
+    if (error) {
+        console.error("Hatcher save error:", error);
+        message.innerHTML = "Save failed: " + error.message;
+        return;
+    }
+
+   editingHatcherInspectionId = null;
+
+message.innerHTML = "Hatcher inspection saved/updated successfully!"; 
+
+    if (typeof loadChickHatcherInspectionHistory === "function") {
+        await loadChickHatcherInspectionHistory();
+    }
+}
+
+async function loadChickHatcherInspectionHistory() {
+
+    const history = document.getElementById(
+        "hatcherInspectionHistory"
+    );
+
+    history.innerHTML = "Loading Hatcher inspection history...";
+
+    const { data, error } = await supabaseClient
+        .from("chick_master_hatcher_inspections")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        console.error("Hatcher history error:", error);
+        history.innerHTML = "Could not load history: " + error.message;
+        return;
+    }
+
+    if (!data || data.length === 0) {
+        history.innerHTML = "No Hatcher inspection records found.";
+        return;
+    }
+
+    const table = document.createElement("table");
+    table.border = "1";
+    table.style.width = "100%";
+    table.style.borderCollapse = "collapse";
+
+    const header = table.insertRow();
+
+    [
+        "Machine",
+        "Frequency",
+        "Inspection Date",
+        "Checked By",
+        "Action"
+    ].forEach(title => {
+        const cell = document.createElement("th");
+        cell.textContent = title;
+        header.appendChild(cell);
+    });
+
+    data.forEach(record => {
+
+        const row = table.insertRow();
+
+        [
+            record.machine_no,
+            record.frequency,
+            record.inspection_date,
+            record.checked_by
+        ].forEach(value => {
+            const cell = row.insertCell();
+            cell.textContent = value || "";
+            cell.style.padding = "8px";
+        });
+
+        const actionCell = row.insertCell();
+        actionCell.style.padding = "8px";
+
+        const button = document.createElement("button");
+        button.textContent = "View";
+
+        button.onclick = function () {
+            viewChickHatcherInspection(record.id);
+        };
+
+        actionCell.appendChild(button);
+
+const editButton = document.createElement("button");
+editButton.textContent = "Edit";
+editButton.style.marginLeft = "5px";
+
+editButton.onclick = function () {
+    editChickHatcherInspection(record.id);
+};
+
+actionCell.appendChild(editButton);
+    });
+
+    history.innerHTML = "";
+    history.appendChild(table);
+}
+
+async function viewChickHatcherInspection(id) {
+
+    const { data, error } = await supabaseClient
+        .from("chick_master_hatcher_inspections")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+    if (error) {
+        alert("Could not load Hatcher inspection: " + error.message);
+        return;
+    }
+
+    let report = `
+CHICK MASTER HATCHER INSPECTION REPORT
+
+Machine Number: ${data.machine_no}
+Frequency: ${data.frequency}
+Inspection Date: ${data.inspection_date}
+Week Number: ${data.week_no || ""}
+
+Checked By: ${data.checked_by}
+Checker Signature: ${data.checked_signature || ""}
+
+Approved By: ${data.approved_by || ""}
+Approver Signature: ${data.approved_signature || ""}
+
+----------------------------------------
+INSPECTION RESULTS
+----------------------------------------
+`;
+
+    data.checklist.forEach((item, index) => {
+
+        report += `
+Inspection Point Number: ${item.item_index + 1}
+Period Number: ${item.period_index + 1}
+Status: ${item.status}
+Action Performed: ${item.action || "None"}
+
+----------------------------------------
+`;
+    });
+
+    const newWindow = window.open("", "_blank");
+
+    if (!newWindow) {
+        alert("Please allow pop-ups to view the inspection report.");
+        return;
+    }
+
+    newWindow.document.write(`
+        <html>
+        <head>
+            <title>Hatcher Inspection Report</title>
+            <style>
+                body {
+                    font-family: Arial;
+                    padding: 25px;
+                    white-space: pre-wrap;
+                }
+                button {
+                    padding: 10px 20px;
+                    margin-bottom: 20px;
+                }
+                @media print {
+                    button { display: none; }
+                }
+            </style>
+        </head>
+        <body>
+            <button onclick="window.print()">Print Report</button>
+            <h2>AGP POULTRY PLC</h2>
+            <pre>${report.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</pre>
+        </body>
+        </html>
+    `);
+
+    newWindow.document.close();
+}
+
+let editingHatcherInspectionId = null;
+
+async function editChickHatcherInspection(id) {
+
+    const { data, error } = await supabaseClient
+        .from("chick_master_hatcher_inspections")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+    if (error) {
+        alert("Could not load inspection: " + error.message);
+        return;
+    }
+
+    editingHatcherInspectionId = id;
+
+    document.getElementById("hatcherMachineNo").value =
+        data.machine_no;
+
+    document.getElementById("hatcherFrequency").value =
+        data.frequency;
+
+    document.getElementById("hatcherDate").value =
+        data.inspection_date;
+
+    document.getElementById("hatcherWeek").value =
+        data.week_no || "";
+
+    document.getElementById("hatcherCheckedBy").value =
+        data.checked_by;
+
+    document.getElementById("hatcherApprovedBy").value =
+        data.approved_by || "";
+
+    document.getElementById("hatcherCheckedSignature").value =
+        data.checked_signature || "";
+
+    document.getElementById("hatcherApprovedSignature").value =
+        data.approved_signature || "";
+
+    // Load the correct checklist
+    loadChickHatcherChecklist();
+
+    // Restore previously saved inspection results
+    data.checklist.forEach(item => {
+
+        const statusField = document.getElementById(
+            `hatcherStatus_${item.item_index}_${item.period_index}`
+        );
+
+        const actionField = document.getElementById(
+            `hatcherAction_${item.item_index}_${item.period_index}`
+        );
+
+        if (statusField) {
+            statusField.value = item.status;
+        }
+
+        if (actionField) {
+            actionField.value = item.action || "";
+        }
+    });
+
+    document.getElementById("hatcherMessage").innerHTML =
+        "Editing inspection record. Make your changes and save.";
+
+    document.getElementById("chickHatcherSection")
+        .scrollIntoView({ behavior: "smooth" });
+}
+
 </script>
 </div>
 </body>
