@@ -345,8 +345,23 @@
 
     <hr>
 
-    <h2>CHICK MASTER SETTER</h2>
-    <h3>Preventive Maintenance Inspection</h3>
+    
+<h2 style="text-align:center;">
+    AGP POULTRY PLC
+</h2>
+
+<h3 style="text-align:center;">
+    CHICK MASTER SETTER
+</h3>
+
+<h3 style="text-align:center;">
+    PREVENTIVE MAINTENANCE INSPECTION
+</h3>
+<hr style="
+    border: none;
+    border-top: 3px solid #1f4e79;
+    margin: 15px 0 20px 0;
+">
 
     <label>Machine Number:</label><br>
     <input type="text" id="chickMachineNo"
@@ -378,10 +393,10 @@
     <br><br>
 
     <div id="chickChecklist">
-        Select inspection frequency to load checklist.
-    </div>
-<div id="chickHatcherSection" style="display:none;">
-    <br>
+    Select inspection frequency to load checklist.
+</div>
+
+<br>
 
     <label>Approved By:</label><br>
     <input type="text" id="chickApprovedBy">
@@ -396,11 +411,9 @@
 
     <hr>
 
-    <h3>Chick Master Inspection History</h3>
-
-    <div id="chickInspectionHistory">
-        No inspection records loaded.
-    </div>
+<div id="chickInspectionHistory">
+    No inspection records loaded.
+</div> 
 
 </div>
 
@@ -410,9 +423,23 @@
 
     <hr>
 
-    <h2>AGP POULTRY PLC</h2>
-    <h3>CHICK MASTER HATCHER</h3>
-    <h3>PREVENTIVE MAINTENANCE INSPECTION</h3>
+   
+<h2 style="text-align:center;">
+    AGP POULTRY PLC
+</h2>
+
+<h3 style="text-align:center;">
+    CHICK MASTER HATCHER
+</h3>
+
+<h3 style="text-align:center;">
+    PREVENTIVE MAINTENANCE INSPECTION
+</h3>
+<hr style="
+    border: none;
+    border-top: 3px solid #1f4e79;
+    margin: 15px 0 20px 0;
+">
 
     <label>Machine Number:</label><br>
     <input type="text" id="hatcherMachineNo"
@@ -475,11 +502,9 @@
 
     <hr>
 
-    <h3>Chick Master Hatcher Inspection History</h3>
-
     <div id="hatcherInspectionHistory">
-        No inspection records loaded.
-    </div>
+    No inspection records loaded.
+</div>
 
 </div>
 
@@ -2383,6 +2408,7 @@ async function deleteWeeklyReport(id) {
 }
 
 
+
 async function goToSection(sectionId) {
 
     const section = document.getElementById(sectionId);
@@ -2393,6 +2419,12 @@ async function goToSection(sectionId) {
         return;
     }
 
+    // Hide both Chick Master inspection sections first
+    document.getElementById("chickMasterSection").style.display = "none";
+
+    document.getElementById("chickHatcherSection").style.display = "none";
+
+    // Open only the selected section
     section.style.display = "block";
 
     section.scrollIntoView({
@@ -2407,18 +2439,14 @@ async function goToSection(sectionId) {
         await showManagerDecisions();
     }
 
-    // Chick Master Setter
+    // Setter history
     if (sectionId === "chickMasterSection") {
         await loadChickInspectionHistory();
     }
 
-    // Chick Master Hatcher
+    // Hatcher history
     if (sectionId === "chickHatcherSection") {
-        if (typeof loadChickHatcherInspectionHistory === "function") {
-            await loadChickHatcherInspectionHistory();
-        } else {
-            console.log("Hatcher history function not added yet.");
-        }
+        await loadChickHatcherInspectionHistory();
     }
 }
 
@@ -3467,7 +3495,7 @@ async function loadChickInspectionHistory() {
     }
 
     let html = `
-        <h3>CHICK MASTER INSPECTION HISTORY</h3>
+     <h3>CHICK MASTER SETTER INSPECTION HISTORY</h3>   
 
         <table border="1" cellpadding="6"
         style="width:100%;border-collapse:collapse;">
@@ -4095,9 +4123,7 @@ error = result.error;
 
 if (!error) {
     console.log("HATCHER RECORD INSERTED:", result.data);
-    message.innerHTML =
-        "Hatcher inspection saved! Record ID: " + result.data.id;
-} 
+}
 }
 
     if (error) {
@@ -4115,13 +4141,22 @@ message.innerHTML = "Hatcher inspection saved/updated successfully!";
     }
 }
 
+
 async function loadChickHatcherInspectionHistory() {
 
     const history = document.getElementById(
         "hatcherInspectionHistory"
     );
 
-    history.innerHTML = "Loading Hatcher inspection history...";
+    if (!history) {
+        console.error("Hatcher history section not found.");
+        return;
+    }
+
+    history.innerHTML = `
+        <h3>CHICK MASTER HATCHER INSPECTION HISTORY</h3>
+        <p>Loading inspection history...</p>
+    `;
 
     const { data, error } = await supabaseClient
         .from("chick_master_hatcher_inspections")
@@ -4129,75 +4164,59 @@ async function loadChickHatcherInspectionHistory() {
         .order("created_at", { ascending: false });
 
     if (error) {
-        console.error("Hatcher history error:", error);
-        history.innerHTML = "Could not load history: " + error.message;
+        history.innerHTML = `
+            <h3>CHICK MASTER HATCHER INSPECTION HISTORY</h3>
+            <p>Could not load history: ${error.message}</p>
+        `;
         return;
     }
+
+    let html = `
+        <h3>CHICK MASTER HATCHER INSPECTION HISTORY</h3>
+    `;
 
     if (!data || data.length === 0) {
-        history.innerHTML = "No Hatcher inspection records found.";
+        html += "<p>No Hatcher inspection records found.</p>";
+        history.innerHTML = html;
         return;
     }
 
-    const table = document.createElement("table");
-    table.border = "1";
-    table.style.width = "100%";
-    table.style.borderCollapse = "collapse";
+    html += `
+        <table border="1" cellpadding="6"
+        style="width:100%;border-collapse:collapse;">
 
-    const header = table.insertRow();
-
-    [
-        "Machine",
-        "Frequency",
-        "Inspection Date",
-        "Checked By",
-        "Action"
-    ].forEach(title => {
-        const cell = document.createElement("th");
-        cell.textContent = title;
-        header.appendChild(cell);
-    });
+        <tr>
+            <th>Machine</th>
+            <th>Frequency</th>
+            <th>Inspection Date</th>
+            <th>Checked By</th>
+            <th>Action</th>
+        </tr>
+    `;
 
     data.forEach(record => {
+        html += `
+            <tr>
+                <td>${record.machine_no || ""}</td>
+                <td>${record.frequency || ""}</td>
+                <td>${record.inspection_date || ""}</td>
+                <td>${record.checked_by || ""}</td>
+                <td>
+                    <button onclick="viewChickHatcherInspection(${record.id})">
+                        View
+                    </button>
 
-        const row = table.insertRow();
-
-        [
-            record.machine_no,
-            record.frequency,
-            record.inspection_date,
-            record.checked_by
-        ].forEach(value => {
-            const cell = row.insertCell();
-            cell.textContent = value || "";
-            cell.style.padding = "8px";
-        });
-
-        const actionCell = row.insertCell();
-        actionCell.style.padding = "8px";
-
-        const button = document.createElement("button");
-        button.textContent = "View";
-
-        button.onclick = function () {
-            viewChickHatcherInspection(record.id);
-        };
-
-        actionCell.appendChild(button);
-
-const editButton = document.createElement("button");
-editButton.textContent = "Edit";
-editButton.style.marginLeft = "5px";
-
-editButton.onclick = function () {
-    editChickHatcherInspection(record.id);
-};
-
-actionCell.appendChild(editButton);
+                    <button onclick="editChickHatcherInspection(${record.id})">
+                        Edit
+                    </button>
+                </td>
+            </tr>
+        `;
     });
 
-    history.innerHTML = "";
-    history.appendChild(table);
+    html += "</table>";
+
+    history.innerHTML = html;
 }
 
 async function viewChickHatcherInspection(id) {
