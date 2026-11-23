@@ -441,14 +441,29 @@
     margin: 15px 0 20px 0;
 ">
 
-    <label>Machine Number:</label><br>
+    
+<div style="
+    background:#f0f6fc;
+    border:1px solid #c5d9ed;
+    border-radius:10px;
+    padding:15px;
+    margin:15px 0;
+">
+
+    <h3 style="color:#1f4e79; margin-top:0;">
+        INSPECTION INFORMATION
+    </h3>
+
+    <label><b>Machine Number:</b></label><br>
     <input type="text" id="hatcherMachineNo"
-           placeholder="Enter machine number">
+           placeholder="Enter machine number"
+           style="width:100%; box-sizing:border-box;">
     <br><br>
 
-    <label>Inspection Frequency:</label><br>
+    <label><b>Inspection Frequency:</b></label><br>
     <select id="hatcherFrequency"
-            onchange="loadChickHatcherChecklist()">
+            onchange="loadChickHatcherChecklist()"
+            style="width:100%; box-sizing:border-box;">
         <option value="">Select Frequency</option>
         <option value="Daily">Daily</option>
         <option value="Weekly">Weekly</option>
@@ -458,23 +473,29 @@
     </select>
     <br><br>
 
-    <label>Inspection Date:</label><br>
-    <input type="date" id="hatcherDate">
+    <label><b>Inspection Date:</b></label><br>
+    <input type="date" id="hatcherDate"
+           style="width:100%; box-sizing:border-box;">
     <br><br>
 
-    <label>Week Number:</label><br>
+    <label><b>Week Number:</b></label><br>
     <input type="text" id="hatcherWeek"
-           placeholder="Enter week number">
+           placeholder="Enter week number"
+           style="width:100%; box-sizing:border-box;">
     <br><br>
 
-    <label>Checked By:</label><br>
-    <input type="text" id="hatcherCheckedBy">
+    <label><b>Checked By:</b></label><br>
+    <input type="text" id="hatcherCheckedBy"
+           style="width:100%; box-sizing:border-box;">
     <br><br>
 
-    <label>Checker Signature:</label><br>
+    <label><b>Checker Signature:</b></label><br>
     <input type="text" id="hatcherCheckedSignature"
-           placeholder="Enter signature">
-    <br><br>
+           placeholder="Enter signature"
+           style="width:100%; box-sizing:border-box;">
+
+</div>
+
 
     <hr>
 
@@ -484,27 +505,82 @@
 
     <hr>
 
-    <label>Approved By:</label><br>
-    <input type="text" id="hatcherApprovedBy">
+   
+<div style="
+    background:#f0f6fc;
+    border:1px solid #c5d9ed;
+    border-radius:10px;
+    padding:15px;
+    margin:15px 0;
+">
+
+    <h3 style="color:#1f4e79; margin-top:0;">
+        APPROVAL INFORMATION
+    </h3>
+
+    <label><b>Approved By:</b></label><br>
+    <input type="text" id="hatcherApprovedBy"
+           placeholder="Enter approver name"
+           style="width:100%; box-sizing:border-box;">
     <br><br>
 
-    <label>Approver Signature:</label><br>
+    <label><b>Approver Signature:</b></label><br>
     <input type="text" id="hatcherApprovedSignature"
-           placeholder="Enter signature">
-    <br><br>
+           placeholder="Enter signature"
+           style="width:100%; box-sizing:border-box;">
 
-    <button type="button"
-            onclick="saveChickHatcherInspection()">
-        Save Hatcher Inspection
-    </button>
+</div>
+ 
+
+ 
+<button type="button"
+        onclick="saveChickHatcherInspection()"
+        style="
+            width:100%;
+            background:#1f4e79;
+            color:white;
+            padding:14px;
+            border:none;
+            border-radius:8px;
+            font-size:16px;
+            font-weight:bold;
+            cursor:pointer;
+        ">
+    SAVE HATCHER INSPECTION
+</button>
+ 
 
     <p id="hatcherMessage"></p>
 
-    <hr>
+ 
+<hr style="
+    border:none;
+    border-top:3px solid #1f4e79;
+    margin:25px 0 15px 0;
+">
+
+<div style="
+    background:#f0f6fc;
+    border:1px solid #c5d9ed;
+    border-radius:10px;
+    padding:15px;
+    margin:15px 0;
+">
+
+    <h3 style="
+        text-align:center;
+        color:#1f4e79;
+        margin-top:0;
+    ">
+        CHICK MASTER HATCHER INSPECTION HISTORY
+    </h3>
 
     <div id="hatcherInspectionHistory">
-    No inspection records loaded.
+        No inspection records loaded.
+    </div>
+
 </div>
+
 
 </div>
 
@@ -3359,111 +3435,162 @@ function loadChickMasterChecklist() {
 }
 
 
-async function saveChickInspection() {
+async function saveChickHatcherInspection(periodIndex = null) {
 
-    const message = document.getElementById("chickMessage");
+    const message = document.getElementById("hatcherMessage");
 
     const machineNo =
-        document.getElementById("chickMachineNo").value.trim();
+        document.getElementById("hatcherMachineNo").value.trim();
 
     const frequency =
-        document.getElementById("chickFrequency").value;
+        document.getElementById("hatcherFrequency").value;
 
     const inspectionDate =
-        document.getElementById("chickDate").value;
+        document.getElementById("hatcherDate").value;
 
     const weekNo =
-        document.getElementById("chickWeek").value.trim();
+        document.getElementById("hatcherWeek").value.trim();
 
     const checkedBy =
-        document.getElementById("chickCheckedBy").value.trim();
+        document.getElementById("hatcherCheckedBy").value.trim();
 
-    // Required information
+    const approvedBy =
+        document.getElementById("hatcherApprovedBy").value.trim();
+
+    const checkedSignature =
+        document.getElementById("hatcherCheckedSignature").value.trim();
+
+    const approvedSignature =
+        document.getElementById("hatcherApprovedSignature").value.trim();
+
     if (!machineNo || !frequency || !inspectionDate || !checkedBy) {
-        message.innerHTML =
-            "Please enter Machine Number, Frequency, Date and Checked By.";
+        message.innerHTML = "Please complete all required fields.";
         return;
     }
 
-    // Get logged-in user
-    const { data: authData, error: authError } =
-        await supabaseClient.auth.getUser();
+    const checklist = [];
 
-    if (authError || !authData.user) {
-        message.innerHTML = "Please login again.";
-        return;
-    }
-
-    // Collect checklist results
-    const rows = document.querySelectorAll(
-        "#chickChecklist table tr"
+    const selects = document.querySelectorAll(
+        "#hatcherChecklist select[id^='hatcherStatus_']"
     );
 
-    const checklistItems = [];
+    for (const select of selects) {
 
-    for (let i = 1; i < rows.length; i++) {
+        const parts = select.id.split("_");
 
-        const cells = rows[i].querySelectorAll("td");
+        const itemIndex = Number(parts[1]);
+        const currentPeriodIndex = Number(parts[2]);
 
-        if (cells.length < 5) continue;
+        // Save only the selected day when requested
+        if (
+            periodIndex !== null &&
+            currentPeriodIndex !== periodIndex
+        ) {
+            continue;
+        }
 
-        const status = cells[3]
-            .querySelector("select").value;
+        const actionField = document.getElementById(
+            `hatcherAction_${itemIndex}_${currentPeriodIndex}`
+        );
 
-        const action = cells[4]
-            .querySelector("input").value.trim();
-
-        if (!status) {
+        if (!select.value) {
             message.innerHTML =
-                "Please select a status for checklist item " + i;
+                "Please complete every inspection point for this day.";
+
+            select.focus();
             return;
         }
 
-        checklistItems.push({
-            no: i,
-            section: cells[1].innerText,
-            checkpoint: cells[2].innerText,
-            status: status,
-            action: action
+        checklist.push({
+            item_index: itemIndex,
+            period_index: currentPeriodIndex,
+            status: select.value,
+            action: actionField ? actionField.value.trim() : ""
         });
     }
 
-    if (checklistItems.length === 0) {
-        message.innerHTML = "Please load the checklist first.";
+    if (checklist.length === 0) {
+        message.innerHTML = "No inspection points found.";
         return;
     }
 
-    message.innerHTML = "Saving inspection...";
+    const dayNames = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+    ];
 
-    // Save as pending manager approval
-    const { error } = await supabaseClient
-        .from("chick_master_inspections")
-        .insert([{
-            machine_no: machineNo,
-            frequency: frequency,
-            inspection_date: inspectionDate,
-            week_no: weekNo || null,
-            checked_by: checkedBy,
-            approved_by: null,
-            checked_signature: null,
-            approved_signature: null,
-            checklist: {
-                items: checklistItems
-            },
-            created_by: authData.user.id
-        }]);
+    const saveName =
+        periodIndex !== null
+            ? dayNames[periodIndex]
+            : frequency;
+
+    message.innerHTML = "Saving " + saveName + " inspection...";
+
+    const { data: userData, error: userError } =
+        await supabaseClient.auth.getUser();
+
+    if (userError || !userData.user) {
+        message.innerHTML = "Please log in again.";
+        return;
+    }
+
+    const inspectionData = {
+        machine_no: machineNo,
+        frequency: frequency,
+        inspection_date: inspectionDate,
+        week_no: weekNo || null,
+        checked_by: checkedBy,
+        approved_by: approvedBy || null,
+        checked_signature: checkedSignature || null,
+        approved_signature: approvedSignature || null,
+        checklist: checklist
+    };
+
+    let error;
+
+    if (editingHatcherInspectionId !== null) {
+
+        const result = await supabaseClient
+            .from("chick_master_hatcher_inspections")
+            .update(inspectionData)
+            .eq("id", editingHatcherInspectionId);
+
+        error = result.error;
+
+    } else {
+
+        const result = await supabaseClient
+            .from("chick_master_hatcher_inspections")
+            .insert([{
+                ...inspectionData,
+                created_by: userData.user.id
+            }])
+            .select()
+            .single();
+
+        error = result.error;
+    }
 
     if (error) {
-        console.error("Chick Master save error:", error);
+        console.error("Hatcher save error:", error);
         message.innerHTML = "Save failed: " + error.message;
         return;
     }
 
-    message.innerHTML =
-        "Inspection submitted successfully. Waiting for manager approval.";
+    editingHatcherInspectionId = null;
 
-    await loadChickInspectionHistory();
+    message.innerHTML =
+        saveName + " inspection saved successfully!";
+
+    if (typeof loadChickHatcherInspectionHistory === "function") {
+        await loadChickHatcherInspectionHistory();
+    }
 }
+
 
 async function loadChickInspectionHistory() {
 
@@ -3942,70 +4069,135 @@ function loadChickHatcherChecklist() {
         }
     };
 
-    const selected = checklists[frequency];
+   
 
-    let html = `
-        <h3>CHICK MASTER HATCHER - ${frequency.toUpperCase()}</h3>
-    `;
+const selected = checklists[frequency];
+
+const totalItems = selected.groups.reduce(
+    (total, group) => total + group.items.length, 0
+);
+
+let html = `
+<div style="background:#eaf2f8;padding:12px;border-radius:12px;">
+
+    <div style="background:#1f4e79;color:white;
+        padding:16px;border-radius:9px;text-align:center;">
+        <h2>CHICK MASTER HATCHER</h2>
+        <h3>${frequency.toUpperCase()} INSPECTION</h3>
+        <p>Total Inspection Points: ${totalItems}</p>
+    </div>
+`;
+
+selected.periods.forEach((period, periodIndex) => {
 
     let itemIndex = 0;
 
+    html += `
+    <div style="background:white;border:2px solid #1f4e79;
+        border-radius:10px;margin-top:20px;overflow:hidden;">
+
+        <div style="background:#1f4e79;color:white;
+            padding:15px;text-align:center;">
+            <h2 style="margin:0;">${period.toUpperCase()}</h2>
+            <p style="margin:5px 0 0;">Complete all inspection points below</p>
+        </div>
+    `;
+
     selected.groups.forEach(group => {
 
-        html += `<h3>${group.name}</h3>`;
+        html += `
+        <div style="padding:12px;">
+
+            <h3 style="background:#dceaf7;color:#1f4e79;
+                padding:12px;border-radius:7px;">
+                ${group.name}
+            </h3>
+        `;
 
         group.items.forEach(item => {
 
             html += `
-                <div style="
-                    border:1px solid #999;
-                    padding:12px;
-                    margin-bottom:12px;
-                    border-radius:6px;
-                ">
+            <div style="border:1px solid #c5d9ed;
+                border-radius:8px;padding:13px;margin-bottom:12px;">
 
-                <strong>${itemIndex + 1}. ${item}</strong>
-            `;
+                <strong style="font-size:15px;color:#243b53;">
+                    ${itemIndex + 1}. ${item}
+                </strong>
 
-            selected.periods.forEach((period, periodIndex) => {
+                <div style="margin-top:12px;">
 
-                html += `
-                    <hr>
+                    <label><b>Inspection Status:</b></label>
 
-                    <strong>${period}</strong><br><br>
+                    <select id="hatcherStatus_${itemIndex}_${periodIndex}"
+                        style="width:100%;padding:12px;margin-top:7px;
+                        border:1px solid #9bb5ce;border-radius:7px;
+                        font-size:15px;background:white;">
 
-                    <label>Status:</label><br>
-
-                    <select id="hatcherStatus_${itemIndex}_${periodIndex}">
                         <option value="">Select Status</option>
                         <option value="OK">OK</option>
-                        <option value="Not OK">Not OK</option>
+                        <option value="Not OK">NOT OK</option>
                         <option value="N/A">N/A</option>
+
                     </select>
 
                     <br><br>
 
-                    <label>Action performed:</label><br>
+                    <label><b>Action Performed / Remarks:</b></label>
 
                     <textarea
                         id="hatcherAction_${itemIndex}_${periodIndex}"
                         rows="2"
-                        style="width:95%;"
-                        placeholder="Enter action performed">
+                        placeholder="Enter action performed or remarks..."
+                        style="width:100%;box-sizing:border-box;
+                        padding:11px;border:1px solid #9bb5ce;
+                        border-radius:7px;margin-top:7px;">
                     </textarea>
-                `;
-            });
 
-            html += `</div>`;
+                </div>
+            </div>
+            `;
 
             itemIndex++;
         });
+
+        html += `</div>`;
+
+    html += `
+        <div style="padding:15px;text-align:center;
+            background:#f0f6fc;">
+
+            <button type="button"
+                onclick="saveChickHatcherInspection(${periodIndex})"
+                style="
+                    width:100%;
+                    background:#198754;
+                    color:white;
+                    padding:14px;
+                    border:none;
+                    border-radius:8px;
+                    font-size:16px;
+                    font-weight:bold;
+                    cursor:pointer;
+                ">
+                SAVE ${period.toUpperCase()} INSPECTION
+            </button>
+
+        </div>
+    `;
+
     });
 
-    container.innerHTML = html;
-}
+    html += `</div>`;
 
-async function saveChickHatcherInspection() {
+});
+
+html += `</div>`;
+
+container.innerHTML = html;
+}
+ 
+
+async function saveChickHatcherInspection(periodIndex = null) {
 
     const message = document.getElementById("hatcherMessage");
 
@@ -4040,7 +4232,6 @@ async function saveChickHatcherInspection() {
 
     const checklist = [];
 
-    // Collect inspection results
     const selects = document.querySelectorAll(
         "#hatcherChecklist select[id^='hatcherStatus_']"
     );
@@ -4048,33 +4239,58 @@ async function saveChickHatcherInspection() {
     for (const select of selects) {
 
         const parts = select.id.split("_");
-        const itemIndex = parts[1];
-        const periodIndex = parts[2];
+
+        const itemIndex = Number(parts[1]);
+        const currentPeriodIndex = Number(parts[2]);
+
+        // Save only the selected day when requested
+        if (
+            periodIndex !== null &&
+            currentPeriodIndex !== periodIndex
+        ) {
+            continue;
+        }
 
         const actionField = document.getElementById(
-            `hatcherAction_${itemIndex}_${periodIndex}`
+            `hatcherAction_${itemIndex}_${currentPeriodIndex}`
         );
 
         if (!select.value) {
-            message.innerHTML = "Please select status for every inspection point.";
+            message.innerHTML =
+                "Please complete every inspection point for this day.";
+
             select.focus();
             return;
         }
 
         checklist.push({
-            item_index: Number(itemIndex),
-            period_index: Number(periodIndex),
+            item_index: itemIndex,
+            period_index: currentPeriodIndex,
             status: select.value,
             action: actionField ? actionField.value.trim() : ""
         });
     }
 
     if (checklist.length === 0) {
-        message.innerHTML = "Please load the inspection checklist first.";
+        message.innerHTML = "No inspection points found.";
         return;
     }
 
-    message.innerHTML = "Saving inspection...";
+    const dayNames = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+    ];
+
+    const saveName =
+        periodIndex !== null
+            ? dayNames[periodIndex]
+            : frequency;
+
+    message.innerHTML = "Saving " + saveName + " inspection...";
 
     const { data: userData, error: userError } =
         await supabaseClient.auth.getUser();
@@ -4084,47 +4300,42 @@ async function saveChickHatcherInspection() {
         return;
     }
 
-    
-const inspectionData = {
-    machine_no: machineNo,
-    frequency: frequency,
-    inspection_date: inspectionDate,
-    week_no: weekNo || null,
-    checked_by: checkedBy,
-    approved_by: approvedBy || null,
-    checked_signature: checkedSignature || null,
-    approved_signature: approvedSignature || null,
-    checklist: checklist
-};
+    const inspectionData = {
+        machine_no: machineNo,
+        frequency: frequency,
+        inspection_date: inspectionDate,
+        week_no: weekNo || null,
+        checked_by: checkedBy,
+        approved_by: approvedBy || null,
+        checked_signature: checkedSignature || null,
+        approved_signature: approvedSignature || null,
+        checklist: checklist
+    };
 
-let error;
+    let error;
 
-if (editingHatcherInspectionId !== null) {
+    if (editingHatcherInspectionId !== null) {
 
-    const result = await supabaseClient
-        .from("chick_master_hatcher_inspections")
-        .update(inspectionData)
-        .eq("id", editingHatcherInspectionId);
+        const result = await supabaseClient
+            .from("chick_master_hatcher_inspections")
+            .update(inspectionData)
+            .eq("id", editingHatcherInspectionId);
 
-    error = result.error;
+        error = result.error;
 
-} else {
+    } else {
 
-   const result = await supabaseClient
-    .from("chick_master_hatcher_inspections")
-    .insert([{
-        ...inspectionData,
-        created_by: userData.user.id
-    }])
-    .select()
-    .single();
+        const result = await supabaseClient
+            .from("chick_master_hatcher_inspections")
+            .insert([{
+                ...inspectionData,
+                created_by: userData.user.id
+            }])
+            .select()
+            .single();
 
-error = result.error;
-
-if (!error) {
-    console.log("HATCHER RECORD INSERTED:", result.data);
-}
-}
+        error = result.error;
+    }
 
     if (error) {
         console.error("Hatcher save error:", error);
@@ -4132,15 +4343,15 @@ if (!error) {
         return;
     }
 
-   editingHatcherInspectionId = null;
+    editingHatcherInspectionId = null;
 
-message.innerHTML = "Hatcher inspection saved/updated successfully!"; 
+    message.innerHTML =
+        saveName + " inspection saved successfully!";
 
     if (typeof loadChickHatcherInspectionHistory === "function") {
         await loadChickHatcherInspectionHistory();
     }
 }
-
 
 async function loadChickHatcherInspectionHistory() {
 
@@ -4219,8 +4430,10 @@ async function loadChickHatcherInspectionHistory() {
     history.innerHTML = html;
 }
 
+
 async function viewChickHatcherInspection(id) {
 
+    // 1. Load selected inspection
     const { data, error } = await supabaseClient
         .from("chick_master_hatcher_inspections")
         .select("*")
@@ -4232,72 +4445,283 @@ async function viewChickHatcherInspection(id) {
         return;
     }
 
-    let report = `
-CHICK MASTER HATCHER INSPECTION REPORT
+    // 2. Original inspection point descriptions
+    const dayNames = [
+        "Monday", "Tuesday", "Wednesday",
+        "Thursday", "Friday", "Saturday"
+    ];
 
-Machine Number: ${data.machine_no}
-Frequency: ${data.frequency}
-Inspection Date: ${data.inspection_date}
-Week Number: ${data.week_no || ""}
+    const pointDefinitions = [
+        { section: "1. DOORS", point: "CLEANLINESS" },
+        { section: "1. DOORS", point: "SEALS and Hinges" },
+        { section: "1. DOORS", point: "Opening and Closing" },
 
-Checked By: ${data.checked_by}
-Checker Signature: ${data.checked_signature || ""}
+        { section: "2. Ventilation Damper", point: "CLEANLINESS" },
+        { section: "2. Ventilation Damper", point: "Auto OPERATION" },
 
-Approved By: ${data.approved_by || ""}
-Approver Signature: ${data.approved_signature || ""}
+        { section: "3. PROBES", point: "CLEANLINESS" },
+        { section: "3. PROBES", point: "CLIPS and Wicks" },
 
-----------------------------------------
-INSPECTION RESULTS
-----------------------------------------
-`;
+        { section: "4. Parameters", point: "Temperature reading" },
+        { section: "4. Parameters", point: "Humidity reading" },
+        { section: "4. Parameters", point: "Alarm" },
 
-    data.checklist.forEach((item, index) => {
+        { section: "5. Fan", point: "Air circulation" },
+        { section: "5. Fan", point: "Abnormal motor sound" }
+    ];
 
-        report += `
-Inspection Point Number: ${item.item_index + 1}
-Period Number: ${item.period_index + 1}
-Status: ${item.status}
-Action Performed: ${item.action || "None"}
+    // 3. Get all daily inspections for the same machine and week
+    let records = [data];
 
-----------------------------------------
-`;
+    if (data.frequency === "Daily" && data.week_no) {
+
+        const { data: weeklyData, error: weeklyError } =
+            await supabaseClient
+                .from("chick_master_hatcher_inspections")
+                .select("*")
+                .eq("machine_no", data.machine_no)
+                .eq("frequency", "Daily")
+                .eq("week_no", data.week_no)
+                .order("inspection_date", { ascending: true });
+
+        if (weeklyError) {
+            alert("Could not load weekly inspections: " +
+                weeklyError.message);
+            return;
+        }
+
+        if (weeklyData && weeklyData.length > 0) {
+            records = weeklyData;
+        }
+    }
+
+    // 4. Protect displayed text
+    const safe = value => String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+
+    // 5. Prepare weekly inspection rows
+    let checklistRows = "";
+
+    records.forEach(record => {
+
+        const items = Array.isArray(record.checklist)
+            ? record.checklist
+            : [];
+
+        const periodIndex = items.length > 0
+            ? Number(items[0].period_index)
+            : -1;
+
+        const dayName = dayNames[periodIndex] || "Inspection";
+
+        checklistRows += `
+            <tr class="day-heading">
+                <td colspan="4">
+                    ${safe(dayName)}
+                    - Inspection Date: ${safe(record.inspection_date)}
+                </td>
+            </tr>
+        `;
+
+        items.sort((a, b) =>
+            Number(a.item_index) - Number(b.item_index)
+        );
+
+        items.forEach(item => {
+
+            const point = pointDefinitions[Number(item.item_index)];
+
+            const description = point
+                ? point.point
+                : "Inspection point " + (Number(item.item_index) + 1);
+
+            const section = point ? point.section : "-";
+
+          checklistRows += `
+    <tr>
+        <td>${Number(item.item_index) + 1}</td>
+        <td>${safe(section)}</td>
+        <td>${safe(description)}</td>
+        <td>${safe(item.status)}</td>
+        <td>${safe(item.action || "-")}</td>
+    </tr>
+`; 
+        });
     });
 
-    const newWindow = window.open("", "_blank");
+    // 6. Open print window
+    const printWindow = window.open("", "_blank");
 
-    if (!newWindow) {
-        alert("Please allow pop-ups to view the inspection report.");
+    if (!printWindow) {
+        alert("Please allow pop-ups to print the report.");
         return;
     }
 
-    newWindow.document.write(`
-        <html>
-        <head>
-            <title>Hatcher Inspection Report</title>
-            <style>
+    // 7. Create professional report
+    printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Chick Master Hatcher Inspection Report</title>
+
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+                color: black;
+            }
+
+            h2, h3 {
+                text-align: center;
+                margin: 6px;
+            }
+
+            .details {
+                margin-top: 25px;
+                margin-bottom: 20px;
+                line-height: 2;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 12px;
+            }
+
+            th, td {
+                border: 1px solid black;
+                padding: 8px;
+                text-align: left;
+            }
+
+            th {
+                background: #eeeeee;
+            }
+
+            .day-heading td {
+                background: #dceaf7;
+                font-weight: bold;
+                font-size: 14px;
+                padding: 12px;
+            }
+
+            .remarks-row td {
+                background: #fafafa;
+                padding: 7px 12px;
+            }
+
+            .signatures {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 65px;
+            }
+
+            .signatures div {
+                width: 42%;
+                line-height: 2;
+            }
+
+            .print-button {
+                padding: 12px 25px;
+                margin-bottom: 20px;
+                background: #1f4e79;
+                color: white;
+                border: none;
+                cursor: pointer;
+            }
+
+            @media print {
                 body {
-                    font-family: Arial;
-                    padding: 25px;
-                    white-space: pre-wrap;
+                    margin: 10mm;
                 }
-                button {
-                    padding: 10px 20px;
-                    margin-bottom: 20px;
+
+                .print-button {
+                    display: none;
                 }
-                @media print {
-                    button { display: none; }
+
+                tr {
+                    page-break-inside: avoid;
                 }
-            </style>
-        </head>
-        <body>
-            <button onclick="window.print()">Print Report</button>
-            <h2>AGP POULTRY PLC</h2>
-            <pre>${report.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")}</pre>
-        </body>
-        </html>
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <button class="print-button" onclick="window.print()">
+            PRINT WEEKLY INSPECTION REPORT
+        </button>
+
+        <h2>AGP POULTRY PLC</h2>
+        <h3>CHICK MASTER HATCHER</h3>
+        <h3>PREVENTIVE MAINTENANCE INSPECTION REPORT</h3>
+
+        <hr>
+
+        <div class="details">
+
+            <strong>Machine Number:</strong>
+            ${safe(data.machine_no)}<br>
+
+            <strong>Inspection Frequency:</strong>
+            ${safe(data.frequency)}<br>
+
+            <strong>Week Number:</strong>
+            ${safe(data.week_no || "-")}<br>
+
+            <strong>Number of Inspection Records:</strong>
+            ${records.length}<br>
+
+            <strong>Checked By:</strong>
+            ${safe(data.checked_by)}<br>
+
+            <strong>Approved By:</strong>
+            ${safe(data.approved_by || "Pending")}
+
+        </div>
+
+        <h3>INSPECTION RESULTS</h3>
+
+        <table>
+          <thead>
+    <tr>
+        <th>No.</th>
+        <th>Section</th>
+        <th>Inspection Point Description</th>
+        <th>Status</th>
+        <th>Action Performed / Remarks</th>
+    </tr>
+</thead>  
+
+            <tbody>
+                ${checklistRows}
+            </tbody>
+        </table>
+
+        <div class="signatures">
+
+            <div>
+                Checked By: ______________________
+                <br>
+                Signature: ________________________
+            </div>
+
+            <div>
+                Approved By: _____________________
+                <br>
+                Signature: ________________________
+            </div>
+
+        </div>
+
+    </body>
+    </html>
     `);
 
-    newWindow.document.close();
+    printWindow.document.close();
 }
 
 let editingHatcherInspectionId = null;
